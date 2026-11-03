@@ -672,6 +672,31 @@ a.next-card:hover { transform: translateY(-4px); }
   animation: glint 4s ease-in-out infinite;
 }
 
+/* ---------- Phones: every button answers your thumb ----------
+   There's no hover on a phone, so each button gets its own press state instead: it shrinks a little
+   and fills (outlined ones with red ink, red ones with a hotter red) the moment you touch it. */
+a, button { -webkit-tap-highlight-color: transparent; }
+@media (hover: none) {
+  :is(.button, .site-nav a, .filter, .reader-btn, .ig-row, .reader-dot, .home-page a, .more, .poster a) { transition: transform 0.12s ease, color 0.12s, border-color 0.12s, background-color 0.12s; }
+  :is(.button:not(.button-off), .site-nav a, .filter, .reader-btn):active { transform: scale(0.93); }
+  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):active { color: #fff; border-color: var(--red); }
+  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):active::before { transform: scaleX(1); transition-duration: 0.18s; }
+  :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])):active { background-color: #ff6b3d; background-image: none; }
+  .reader-btn:active { border-color: var(--red); color: #fff; }
+  .reader-btn:active::before { transform: scale(1); transition-duration: 0.15s; }
+  .ig-row:active { color: var(--red); }
+  .ig-row:active .ig-button { transform: scale(0.88); border-color: var(--red); }
+  .motion .ig-row:active .ig-button { color: #fff; }
+  .motion .ig-row:active .ig-button::before { transform: scaleX(1); transition-duration: 0.15s; }
+  .ig-button { transition: transform 0.12s ease, border-color 0.12s; }
+  .home-page a:active img, .reader-fig a:active { transform: scale(0.98); }
+  .home-page img, .reader-fig a { transition: transform 0.15s ease; }
+  .more:active { color: var(--paper); }
+  .more:active span[aria-hidden] { transform: translateX(6px); }
+  .poster a:active { color: var(--red); -webkit-text-stroke: 0; transform: scale(0.96); }
+  .reader-dot:active::before { background: var(--red); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .cover-mark.is-play .em-letters, .cover-mark.is-play .em-wings { animation: none; }

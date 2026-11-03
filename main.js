@@ -2,6 +2,8 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
   if (!reduce) document.documentElement.classList.add('motion');
+  // iPhone Safari only shows :active press states when the page listens for touches.
+  document.addEventListener('touchstart', function () {}, { passive: true });
 
   // Emblem: the red DB lands, then the white wings open. Once on load, again on tap.
   var mark = document.querySelector('.cover-mark');
