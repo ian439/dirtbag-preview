@@ -390,16 +390,22 @@ html:not(.motion) .toc-title { opacity: 1; }
 @media (min-width: 761px) {
   .reader-page { grid-template-columns: auto minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: end; }
   .reader-fig img { width: auto; max-width: 100%; height: calc(100svh - 190px); min-height: 420px; }
+  .reader-type { width: auto; height: calc(100svh - 190px); min-height: 420px; }
 }
 /* The controls stay quiet: two bare arrows and a count, and a thin line of segments, one per page,
    that you can tap to jump. The page you're on is the red segment. Tapping the page itself turns it. */
-.reader-controls { display: flex; align-items: center; gap: 4px; margin-top: 16px; }
+.reader-controls { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
 .reader-btn {
-  min-width: 44px; min-height: 44px; padding: 0; border: 0; background: none; cursor: pointer;
-  color: var(--muted); font: 400 1.25rem/1 var(--type); transition: color 0.2s, transform 0.2s;
+  position: relative; display: inline-grid; place-items: center; width: 52px; height: 52px; padding: 0;
+  border: 1.5px solid var(--paper); border-radius: 50%; background: none; color: var(--paper); cursor: pointer;
+  font: 400 1.5rem/1 var(--type); isolation: isolate; transition: color 0.2s, border-color 0.2s, transform 0.2s;
 }
-.reader-btn:hover { color: var(--red); }
-.reader-count { font: 400 0.8125rem/1 var(--type); letter-spacing: 0.08em; color: var(--muted); min-width: 4.5em; text-align: center; }
+/* Round, full-strength arrows that read as buttons at a glance; red fill on hover and focus. */
+.reader-btn::before { content: ""; position: absolute; inset: -1.5px; z-index: -1; border-radius: 50%; background: var(--red); transform: scale(0); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.reader-btn:hover, .reader-btn:focus-visible { border-color: var(--red); color: #fff; }
+.reader-btn:hover::before, .reader-btn:focus-visible::before { transform: scale(1); }
+.reader-btn:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+.reader-count { font: 400 0.9375rem/1 var(--type); letter-spacing: 0.08em; color: var(--paper); min-width: 5em; text-align: center; }
 .reader-jump { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; max-width: 560px; }
 .reader-dot { position: relative; display: block; height: 24px; }
 .reader-dot::before {
@@ -408,7 +414,20 @@ html:not(.motion) .toc-title { opacity: 1; }
 }
 .reader-dot:hover::before { background: rgba(241, 238, 232, 0.6); }
 .reader-dot[aria-current="page"]::before { background: var(--red); transform: scaleY(2); }
-.reader-fig img { cursor: e-resize; }
+/* A story with no photo yet opens like a printed type page: its number outlined in red, its title set
+   big at the foot. Same shape and size as a page photo, so every turn of the reader feels the same. */
+.reader-fig > a:not(.reader-type) { display: block; }
+.reader-info .toc-meta { grid-column: auto; }
+.reader-type {
+  display: grid; align-content: space-between; aspect-ratio: 943 / 1400; width: 100%; padding: clamp(18px, 4%, 36px);
+  background: var(--ink); border: 1px solid var(--line); text-decoration: none; container-type: inline-size;
+}
+.reader-type-no {
+  font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62; font-size: 38cqi; line-height: 0.8;
+  color: transparent; -webkit-text-stroke: 2px var(--red);
+}
+.reader-type-title { font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62; font-size: 15cqi; line-height: 0.9; text-transform: uppercase; color: var(--paper); text-wrap: balance; }
+.reader-dek { font: 400 clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem)/1.55 var(--type); color: #d8d3cc; max-width: 42ch; }
 .reader-more { margin-top: 18px; }
 .reader-more a { color: var(--paper); }
 
@@ -459,10 +478,27 @@ html:not(.motion) .toc-title { opacity: 1; }
 }
 /* Long names (or handles) get smaller so they never break mid-word. */
 .person-name.is-long { font-size: clamp(1.9rem, 0.6rem + 7.5vw, 9rem); }
-.person-meta { display: grid; gap: 6px; }
-/* An artist's photo, whole and square, up in the corner. */
-.person-cut { position: absolute; top: 0; right: var(--gutter); width: clamp(140px, 26vw, 360px); }
-.person-cut img { width: 100%; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45); }
+.person-meta { display: grid; gap: 10px; justify-items: start; }
+.person-line { font: 400 clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem)/1.55 var(--type); color: #d8d3cc; max-width: 40ch; }
+/* With a photo: name and details on one side, the photo big on the other (photo first on a phone).
+   They sit in their own columns, so the huge name never runs over the picture. */
+.person-head.has-photo { min-height: 0; align-items: end; gap: clamp(28px, 5vw, 64px); }
+.person-text { display: grid; gap: 14px; container-type: inline-size; }
+.person-head.has-photo .person-name { font-size: clamp(2.25rem, 16cqi, 9rem); }
+.person-head.has-photo .person-name.is-long { font-size: clamp(1.9rem, 10cqi, 7rem); }
+.person-photo { margin: 0; }
+.person-photo img { width: 100%; }
+@media (min-width: 900px) { .person-head.has-photo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 899px) { .person-head.has-photo .person-photo { order: -1; } }
+/* Instagram: the @handle, then a small square Instagram button. The whole row is one link. */
+.ig-row { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; font: 400 1rem/1 var(--type); color: var(--paper); }
+.ig-button { position: relative; display: inline-grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(241, 238, 232, 0.3); isolation: isolate; }
+.ig-button svg { width: 18px; height: 18px; }
+.ig-row:hover { color: var(--red); }
+.ig-row:hover .ig-button { border-color: var(--red); }
+.person-words .pull { margin: 0 0 clamp(24px, 4vw, 40px); max-width: 44ch; }
+.person-words .pull footer { margin-top: 10px; text-transform: none; }
+.person-words .pull p { font: 400 clamp(1.2rem, 1rem + 1vw, 1.75rem)/1.45 var(--type); text-transform: none; letter-spacing: -0.01em; }
 
 /* ---------- Shop ---------- */
 .product-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 3vw, 36px) clamp(12px, 2vw, 24px); }
@@ -551,6 +587,8 @@ a.next-card:hover { transform: translateY(-4px); }
 
 /* Outlined buttons fill with red ink from the left on hover, like a squeegee pass. */
 .site-nav a, .filter, .button-line { isolation: isolate; }
+.motion .ig-button::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--red); transform: scaleX(0); transform-origin: left center; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) { .motion .ig-row:hover .ig-button { color: #fff; } .motion .ig-row:hover .ig-button::before { transform: scaleX(1); } }
 .button-line { position: relative; }
 .motion :is(.site-nav a, .filter, .button-line)::before {
   content: ""; position: absolute; inset: 0; z-index: -1; background: var(--red);

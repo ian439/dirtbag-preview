@@ -47,8 +47,9 @@
     });
   });
 
-  // The magazine reader on the issue page: the pages sit in a row you swipe through (the browser's own
-  // scroll-snap does the swiping). The arrows, arrow keys, the segment line and a tap on the page move it,
+  // The magazine reader on the issue page: the first stories sit in a row you swipe through (the browser's
+  // own scroll-snap does the swiping). The arrows, arrow keys and the segment line move it; tapping a page
+  // opens its story,
   // and the address follows along (#p-10) so a page can be shared.
   var track = document.querySelector('.reader-track');
   if (track) {
@@ -70,10 +71,7 @@
     document.querySelector('.reader-prev').addEventListener('click', function () { go(at - 1); });
     document.querySelector('.reader-next').addEventListener('click', function () { go(at + 1); });
     dots.forEach(function (d, k) { d.addEventListener('click', function (e) { e.preventDefault(); go(k); }); });
-    // Tapping a page turns to the next one (a quick tap only, so swiping still swipes).
-    track.querySelectorAll('.reader-fig img').forEach(function (im) {
-      im.addEventListener('click', function () { go(at + 1 < slides.length ? at + 1 : 0); });
-    });
+
     track.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft') { e.preventDefault(); go(at - 1); }
       if (e.key === 'ArrowRight') { e.preventDefault(); go(at + 1); }
