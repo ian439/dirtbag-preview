@@ -1,0 +1,643 @@
+/* The Dirtbag's Rag. Colors sampled from the Issue 01 cover (assets/issue-01/page-01.jpg). */
+:root {
+  --charcoal: #1a1819;
+  --ink: #121112;
+  --spine: #991e21;     /* the red down the cover's edge */
+  --red: #d42a30;       /* the emblem's letters */
+  --paper: #f1eee8;
+  --muted: #9a9592;
+  --line: rgba(241, 238, 232, 0.14);
+  --display: "Archivo", "Arial Narrow", sans-serif;
+  --body: "Archivo", system-ui, sans-serif;
+  --type: "Courier Prime", "Courier New", monospace;  /* the typewriter text in the issue */
+  --spine-w: 10px;
+  --gutter: clamp(16px, 5vw, 56px);
+}
+
+* { box-sizing: border-box; }
+html { background: var(--charcoal); scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--charcoal);
+  color: var(--paper);
+  font: 400 1.0625rem/1.6 var(--body);
+  font-variation-settings: "wdth" 100;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 800; line-height: 0.95; text-transform: uppercase; }
+h2 { font-size: clamp(3rem, 2rem + 6vw, 7rem); font-variation-settings: "wdth" 62; letter-spacing: -0.01em; }
+h3 { font-size: 1.5rem; font-variation-settings: "wdth" 75; }
+p { margin: 0; }
+.eyebrow { margin: 0; font: 400 0.8125rem/1.4 var(--type); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+/* Placeholder copy: dashed red underline and a DRAFT tag, so it can't pass for final. */
+.draft {
+  display: inline-block;
+  font: 400 0.8125rem/1.4 var(--type);
+  color: var(--muted);
+  text-decoration: underline dashed var(--red) 1px;
+  text-underline-offset: 4px;
+}
+.draft::before {
+  content: "DRAFT";
+  margin-right: 0.5em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  vertical-align: 1px;
+}
+
+/* The red spine from the cover, down the left edge of every page. */
+.spine {
+  position: fixed; inset: 0 auto 0 0; z-index: 30;
+  width: calc(var(--spine-w) + env(safe-area-inset-left, 0px));
+  background: var(--spine);
+  pointer-events: none;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: fixed; inset: 0 0 auto 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gutter) 10px calc(var(--gutter) + var(--spine-w));
+  background: var(--charcoal);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+.site-header.is-scrolled { border-bottom-color: var(--line); }
+/* The header emblem waits until the cover's own emblem scrolls away. */
+.brand { display: flex; align-items: center; min-height: 44px; line-height: 0; opacity: 0; transition: opacity 0.3s; }
+.site-header.is-scrolled .brand { opacity: 1; }
+.brand-mark { display: block; width: 96px; height: 33px; }   /* the logo is 1200 × 413 */
+/* Each link is a small outlined button so it reads as something to tap. Shop is the filled red
+   button, like the rest of the site's buttons. The page you're on is outlined in red. */
+.site-nav { display: flex; align-items: center; gap: clamp(6px, 0.8vw, 10px); }
+.site-nav a {
+  position: relative; display: inline-flex; align-items: center; min-height: 30px; padding: 0 9px;
+  border: 1px solid rgba(241, 238, 232, 0.3); background: none; color: var(--paper); cursor: pointer;
+  font: 400 0.75rem/1 var(--type); letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+/* Slim to look at, but the tap area still reaches 44px. */
+.site-nav a::after { content: ""; position: absolute; inset: -7px -3px; }
+.site-nav a:hover { border-color: var(--red); color: var(--red); }
+.site-nav a[aria-current="page"] { border-color: var(--red); color: var(--red); }
+.site-nav .nav-shop { border-color: var(--red); background: var(--red); color: #fff; }
+.site-nav .nav-shop:hover { background-color: var(--red); color: #fff; }
+.site-nav .nav-shop[aria-current="page"] { background: none; color: var(--red); }
+/* The same links, in the same order, on every screen. On a phone "Share your work" says "Share"
+   (the full name stays for screen readers), and the emblem and buttons shrink so all four fit on one row. */
+.nav-short { display: none; }
+@media (max-width: 520px) {
+  .nav-long { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .nav-short { display: inline; }
+  .site-header { gap: 8px; padding-left: calc(12px + var(--spine-w)); padding-right: 12px; }
+  .brand-mark { width: 54px; height: 19px; }
+  .site-nav { gap: 4px; }
+  .site-nav a { padding: 0 6px; font-size: 0.6875rem; letter-spacing: 0.02em; }
+}
+/* The smallest phones (iPhone SE): the emblem steps aside so the four links still fit. */
+@media (max-width: 359px) { .brand { display: none; } .site-header { justify-content: flex-end; } }
+.site-header { flex-wrap: wrap; }
+
+/* Page turns: going to another page slides the old one away and the new one in, while the
+   header and spine stay put. Browsers without view transitions just load the page. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+.site-header { view-transition-name: header; }
+.spine { view-transition-name: spine; }
+::view-transition-old(root) { animation: turn-out 0.26s cubic-bezier(0.4, 0, 1, 1) both; }
+::view-transition-new(root) { animation: turn-in 0.42s cubic-bezier(0, 0, 0.2, 1) both; }
+@keyframes turn-out { to { opacity: 0; transform: translateX(-4%); } }
+@keyframes turn-in { from { opacity: 0; transform: translateX(6%); } }
+
+/* As you read down the page, a brighter red fills the spine from the top. */
+.spine-fill { position: absolute; inset: 0; background: var(--red); transform-origin: top; transform: scaleY(0); }
+
+/* ---------- Home: the opening screen ---------- */
+/* One screen that says what this is: the emblem, the mission line, and Get the Rag. */
+.is-home main { padding-top: calc(64px + env(safe-area-inset-top, 0px)); }
+.opening {
+  min-height: calc(100svh - 64px - env(safe-area-inset-top, 0px));
+  max-width: 1400px; margin: 0 auto; padding-block: clamp(28px, 6vh, 64px);
+  display: grid; align-content: center; align-items: center; gap: clamp(32px, 5vw, 64px);
+}
+.opening-text { display: grid; justify-items: start; gap: clamp(18px, 3vh, 28px); }
+
+.cover-kicker { font: 400 0.8125rem/1.4 var(--type); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.cover-mark { background: none; border: 0; padding: 0; cursor: pointer; width: min(440px, 72vw); }
+/* The logo in two layers, stacked exactly: the wings and shield, and the red letters on top. */
+.cover-layers { display: grid; }
+.cover-layers img { grid-area: 1 / 1; width: 100%; }
+/* The emblem builds itself: the red DB drops in, then the white wings open out from the center. */
+.em-wings, .em-letters { transform-origin: 50% 50%; }
+.cover-mark.is-play .em-letters { animation: em-letters 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.cover-mark.is-play .em-wings { animation: em-wings 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) 0.45s both; }
+@keyframes em-letters {
+  from { opacity: 0; transform: translateY(-30%) scale(1.3); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes em-wings {
+  from { opacity: 0; transform: scaleX(0.15); }
+  to   { opacity: 1; transform: none; }
+}
+/* ---------- Sections ---------- */
+main > section, main > .is-off > section { padding-inline: calc(var(--gutter) + var(--spine-w)) var(--gutter); }
+.section-head { display: grid; gap: 10px; margin-bottom: clamp(28px, 5vw, 56px); }
+.meta { font: 400 0.9375rem/1.4 var(--type); color: var(--muted); }
+
+/* The mission in the issue's typewriter type. With motion on, it sets word by word as the page opens. */
+.mission { margin: 0; font: 400 clamp(2rem, 1.1rem + 4.2vw, 4.75rem)/1.1 var(--type); letter-spacing: -0.03em; }
+.motion .mission .w { opacity: 0.16; transition: opacity 0.35s ease; }
+.motion .mission .w.is-lit { opacity: 1; }
+.intro-body { font: 400 clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem)/1.55 var(--type); max-width: 36ch; color: #d8d3cc; }
+.source { font: 400 0.8125rem/1.4 var(--type); color: var(--muted); }
+
+figcaption, .credit { margin-top: 10px; font: 400 0.8125rem/1.4 var(--type); color: var(--muted); }
+.credit { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+
+.next { padding-block: clamp(96px, 14vw, 180px); max-width: 1400px; margin: 0 auto; }
+.next-card {
+  display: grid; gap: 12px; padding: clamp(28px, 5vw, 64px);
+  background: var(--spine);
+  color: #fff;
+}
+.next-card .eyebrow { color: rgba(255, 255, 255, 0.75); }
+.next-where { font: 400 1.125rem/1.3 var(--type); }
+.next-date { font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62; font-size: clamp(2.5rem, 1.6rem + 4vw, 5rem); line-height: 1; text-transform: uppercase; }
+.next-card .draft { color: rgba(255, 255, 255, 0.8); text-decoration-color: #fff; }
+.next-card .draft::before { background: #fff; color: var(--spine); }
+
+
+/* ---------- Shared bits ---------- */
+h1 { font-size: clamp(3rem, 2rem + 6vw, 7rem); font-variation-settings: "wdth" 62; letter-spacing: -0.01em; }
+.is-inner main { padding-top: calc(72px + env(safe-area-inset-top, 0px)); }
+.is-inner .brand { opacity: 1; }
+main > section > a.more, .more {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 18px;
+  font: 400 0.8125rem/1 var(--type); letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--red);
+}
+.more:hover { color: var(--paper); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 14px; }
+.button {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px;
+  background: var(--red); color: #fff; text-decoration: none;
+  font: 400 0.875rem/1 var(--type); letter-spacing: 0.08em; text-transform: uppercase;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.button:hover { transform: translateY(-2px); }
+.button-off { opacity: 0.45; cursor: not-allowed; }
+.button-off:hover { transform: none; }
+.price { font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62; font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem); line-height: 1; }
+.tag { display: inline-block; padding: 2px 7px; border: 1px solid var(--line); font: 400 0.6875rem/1.4 var(--type); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tag-draft { border-style: dashed; border-color: var(--red); }
+.list-link { font-family: var(--display); font-weight: 700; font-variation-settings: "wdth" 80; font-size: 1.5rem; text-transform: uppercase; }
+.list-link a { text-decoration: none; }
+.list-link a:hover { color: var(--red); }
+
+/* Where a photo will go. */
+.ph { display: grid; place-items: center; width: 100%; background: var(--ink); border: 1px dashed var(--line); }
+
+/* Built but switched off: only seen in the local preview. */
+.hidden-tag {
+  margin: 0 calc(var(--gutter)) 12px calc(var(--gutter) + var(--spine-w)); padding: 6px 10px; display: inline-block;
+  background: #e7c14a; color: #1a1819; font: 700 0.6875rem/1.3 var(--type); letter-spacing: 0.1em; text-transform: uppercase;
+}
+.is-off { outline: 2px dashed #e7c14a; outline-offset: -2px; padding-top: 16px; }
+.is-off .hidden-tag { margin-left: calc(var(--gutter) + var(--spine-w)); }
+.nav-off { opacity: 0.45; text-decoration: line-through !important; }
+
+/* Page tops on inner pages */
+.page-head { max-width: 1400px; margin: 0 auto; padding-block: clamp(32px, 6vw, 80px) clamp(56px, 8vw, 96px); }
+
+/* ---------- Home: numbered sections ---------- */
+/* Every section opens the same way, like a line of the Rag's contents page: a rule, the number in
+   red, the name, and a link onward on the right. */
+.home-sec { max-width: 1400px; margin: 0 auto; padding-block: clamp(64px, 10vw, 128px) 0; }
+.home-head {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; gap: 6px 16px;
+  padding-top: 14px; margin-bottom: clamp(28px, 5vw, 56px); border-top: 1px solid var(--line);
+}
+.home-no { font: 400 0.875rem/1 var(--type); color: var(--red); }
+.home-head h2 { font-size: clamp(2rem, 1.2rem + 3.6vw, 4.5rem); line-height: 0.95; }
+.home-head .more { margin-top: 0; min-height: 0; }
+.home-head .draft { grid-column: 3; }
+@media (max-width: 520px) {
+  .home-head { grid-template-columns: auto minmax(0, 1fr); }
+  .home-head > :nth-child(3) { grid-column: 2; }
+}
+.home-title { font-size: clamp(2.5rem, 1.6rem + 4vw, 5rem); }
+.home-title a { text-decoration: none; }
+.home-title a:hover { color: var(--red); }
+/* Inside: the pages from the issue, whole, in a plain grid with their credits under them. */
+.home-pages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px) clamp(16px, 2.4vw, 32px); }
+.home-page a { display: block; }
+.home-page img { width: 100%; box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45); }
+@media (hover: hover) {
+  .home-page img { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .home-page a:hover img { transform: translateY(-6px); }
+}
+@media (max-width: 760px) { .home-pages { grid-template-columns: 1fr; } }
+/* Words on one side, a stencil print on the other (stacked on a phone). They never share space. */
+.home-split { display: grid; gap: clamp(28px, 5vw, 64px); align-items: center; }
+@media (min-width: 900px) { .home-split { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); } }
+/* Stencil prints (tools/stencil.py): the issue's photos cut into charcoal and red, used big as design. */
+.stencil { margin: 0; }
+.stencil img { width: 100%; }
+.home-share, .home-find { display: grid; gap: 22px; justify-items: start; container-type: inline-size; }
+.home-big { font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62; font-size: clamp(2.25rem, 1rem + 7vw, 8rem); line-height: 0.92; text-transform: uppercase; max-width: 12ch; }
+/* Sized to its own column (container units), so a long word like @DIRTBAGSRAG never runs past it. */
+@supports (font-size: 1cqi) { .home-big { font-size: clamp(2rem, 15cqi, 8rem); } }
+.home-big a { text-decoration: none; }
+.home-big a:hover { color: var(--red); }
+.home-find .meta a { color: var(--paper); }
+.home-signoff { font: 400 clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem)/1.55 var(--type); color: #d8d3cc; padding-bottom: clamp(64px, 10vw, 128px); }
+.home-sec .next { padding: 0; max-width: none; }
+/* A second, quieter button: outlined, fills red on hover. */
+.button-line { background: none; border: 1px solid rgba(241, 238, 232, 0.5); color: var(--paper); }
+.button-line:hover { border-color: var(--red); background: var(--red); color: #fff; }
+
+/* ---------- Share: the invitation ---------- */
+/* Pages from the Rag, whole and square, beside the words.
+.share-band { padding-block: clamp(96px, 14vw, 180px); }
+.share-band > div { max-width: 1100px; margin: 0 auto; display: grid; gap: 18px; justify-items: start; }
+.share-band h2 { font-size: clamp(2.25rem, 1.4rem + 4.5vw, 5.5rem); line-height: 1; max-width: 16ch; text-wrap: balance; }
+.invite {
+  display: grid; gap: clamp(36px, 6vw, 64px); align-items: center;
+  max-width: 1400px; margin: 0 auto; padding-block: clamp(96px, 14vw, 180px);
+}
+.invite .invite-text { max-width: none; margin: 0; display: grid; gap: 18px; justify-items: start; }
+.invite h2 { font-size: clamp(3rem, 1rem + 8.5vw, 9.5rem); line-height: 0.9; max-width: 11ch; }
+.invite-credit { margin: 0; font: 400 0.75rem/1.5 var(--type); color: var(--muted); }
+/* The pages: a staggered row above the words on a phone, a column beside them on wide screens.
+   The stagger is margin inside the grid, so the pages keep their own space. */
+.invite .invite-pages { max-width: none; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 2vw, 22px); align-items: start; }
+.invite-page img { width: 100%; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45); }
+.invite-page:nth-child(2) { margin-top: 18%; }
+.invite-page:nth-child(3) { margin-top: 8%; }
+@media (min-width: 900px) {
+  .invite { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
+  .invite .invite-pages { grid-column: 2; grid-row: 1; }
+  .invite .invite-text { grid-column: 1; grid-row: 1; }
+  .invite-credit { grid-column: 1 / -1; }
+}
+}
+
+/* ---------- Home: the Rag you can pick up ---------- */
+/* Tap turns it over to the back cover. */
+.rag { max-width: 420px; perspective: 1400px; }
+.rag-flip {
+  display: grid; width: 100%; padding: 0; border: 0; background: none; cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rag-flip[aria-pressed="true"] { transform: rotateY(180deg); }
+.rag-face { grid-area: 1 / 1; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.rag-face img { width: 100%; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45); }
+.rag-back { transform: rotateY(180deg); }
+.rag-hint { margin-top: 14px; font: 400 0.75rem/1.4 var(--type); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.issue-head h2 a { text-decoration: none; }
+.issue-head h2 a:hover { color: var(--red); }
+@media (max-width: 760px) { .rag { max-width: 62%; } }
+
+/* ---------- Home: artists as a show poster ---------- */
+.poster {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0.06em 0.4em;
+  font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62;
+  font-size: clamp(1.9rem, 0.8rem + 5.4vw, 6.5rem); line-height: 1; text-transform: uppercase; text-align: center;
+}
+.poster a { text-decoration: none; transition: color 0.2s; }
+.poster li:nth-child(even) a { color: transparent; -webkit-text-stroke: 1.5px var(--paper); }
+.poster a:hover, .poster li:nth-child(even) a:hover { color: var(--red); -webkit-text-stroke: 0; }
+.lineup-poster .section-head { justify-items: center; text-align: center; }
+.lineup-poster > .more { display: flex; justify-content: center; }
+
+/* ---------- Issue ---------- */
+.issue-head { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 72px); align-items: end; }
+.issue-head .section-head { margin-bottom: 0; }
+@media (max-width: 760px) { .issue-head { grid-template-columns: 1fr; } }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--red); }
+
+.stories, .more-stories, .shop-section, .shop-strip, .people, .lineup { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(72px, 10vw, 140px); }
+/* Slim like the nav buttons; the tap area still reaches 44px. */
+.filters { display: flex; flex-wrap: wrap; gap: 14px 6px; margin-bottom: 18px; }
+.filter {
+  position: relative; min-height: 30px; padding: 0 9px; border: 1px solid rgba(241, 238, 232, 0.3); background: none; color: var(--paper); cursor: pointer;
+  font: 400 0.75rem/1 var(--type); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.filter::after { content: ""; position: absolute; inset: -7px -3px; }
+.filter:hover { border-color: var(--red); color: var(--red); }
+.filter[aria-pressed="true"] { background: var(--paper); color: var(--charcoal); border-color: var(--paper); }
+html:not(.js) .filters { display: none; }
+.stories > .meta { margin-bottom: clamp(24px, 4vw, 40px); }
+
+/* The contents page: numbered rows like the printed one. The row mid-screen (or hovered)
+   lights up and its photo peeks out, the same as the sections on the home page. */
+.toc-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.toc-row[hidden] { display: none; }
+.toc-row a {
+  position: relative; display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: 4px 14px; align-items: baseline;
+  padding: clamp(14px, 2vw, 22px) 0; border-bottom: 1px solid var(--line); text-decoration: none;
+}
+.toc-no { font: 400 0.875rem/1 var(--type); color: var(--red); }
+.toc-title {
+  font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62;
+  font-size: clamp(2rem, 1rem + 4.2vw, 4.75rem); line-height: 0.95; text-transform: uppercase;
+  transition: opacity 0.3s; opacity: 0.72;
+}
+.toc-meta { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.toc-row.is-active .toc-title { opacity: 1; }
+@media (hover: hover) {
+  .toc-row a:hover .toc-title { opacity: 1; }
+}
+html:not(.motion) .toc-title { opacity: 1; }
+
+/* ---------- Issue: the magazine reader ---------- */
+/* One page at a time, as big as the screen allows, in a row you swipe through (scroll-snap).
+   The page number, story and credit sit beside the page on wide screens and under it on a phone. */
+.reader-head { max-width: 1400px; margin: 0 auto; padding-block: clamp(24px, 4vw, 48px) clamp(16px, 3vw, 28px); display: grid; gap: 8px; }
+.reader { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(64px, 10vw, 120px); scroll-margin-top: 84px; }
+.reader-track {
+  list-style: none; margin: 0; padding: 0; display: flex; gap: 80px; overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scrollbar-width: none; outline-offset: 4px;
+}
+.reader-track::-webkit-scrollbar { display: none; }
+.reader-page {
+  flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always;
+  display: grid; gap: 16px; align-content: start;
+}
+.reader-fig { margin: 0; }
+.reader-fig img { width: 100%; box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45); }
+.reader-info { display: grid; gap: 8px; align-content: start; justify-items: start; }
+.reader-info .more { margin-top: 4px; }
+.reader-no { font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62; font-size: clamp(2.5rem, 1.6rem + 4vw, 5rem); line-height: 0.9; text-transform: uppercase; color: var(--red); }
+.reader-story { font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 70; font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem); line-height: 1; text-transform: uppercase; }
+.reader-story a { text-decoration: none; }
+.reader-story a:hover { color: var(--red); }
+@media (min-width: 761px) {
+  .reader-page { grid-template-columns: auto minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: end; }
+  .reader-fig img { width: auto; max-width: 100%; height: calc(100svh - 190px); min-height: 420px; }
+}
+/* The controls stay quiet: two bare arrows and a count, and a thin line of segments, one per page,
+   that you can tap to jump. The page you're on is the red segment. Tapping the page itself turns it. */
+.reader-controls { display: flex; align-items: center; gap: 4px; margin-top: 16px; }
+.reader-btn {
+  min-width: 44px; min-height: 44px; padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--muted); font: 400 1.25rem/1 var(--type); transition: color 0.2s, transform 0.2s;
+}
+.reader-btn:hover { color: var(--red); }
+.reader-count { font: 400 0.8125rem/1 var(--type); letter-spacing: 0.08em; color: var(--muted); min-width: 4.5em; text-align: center; }
+.reader-jump { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; max-width: 560px; }
+.reader-dot { position: relative; display: block; height: 24px; }
+.reader-dot::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
+  background: rgba(241, 238, 232, 0.22); transition: background-color 0.25s, transform 0.25s;
+}
+.reader-dot:hover::before { background: rgba(241, 238, 232, 0.6); }
+.reader-dot[aria-current="page"]::before { background: var(--red); transform: scaleY(2); }
+.reader-fig img { cursor: e-resize; }
+.reader-more { margin-top: 18px; }
+.reader-more a { color: var(--paper); }
+
+/* ---------- Story ---------- */
+.story { padding-bottom: clamp(72px, 10vw, 140px); }
+.story-body, .story-type { max-width: 900px; margin: 0 auto; padding-inline: calc(var(--gutter) + var(--spine-w)) var(--gutter); }
+.story .eyebrow a { text-decoration: none; color: var(--red); }
+.story .meta a { color: var(--paper); }
+
+/* With a photo: the whole page, uncropped and square, with the title under it. On wide screens
+   the (portrait) page sits on the left at screen height and the title beside it. */
+.story-hero { display: grid; margin-bottom: clamp(40px, 6vw, 80px); }
+.story-hero-photo { padding-left: var(--spine-w); }
+.story-hero-photo img { width: 100%; }
+.story-hero-text { display: grid; gap: 12px; padding: clamp(20px, 4vw, 32px) var(--gutter) 0 calc(var(--gutter) + var(--spine-w)); }
+.story-hero h1 { font-size: clamp(3.25rem, 1.5rem + 8vw, 9rem); line-height: 0.9; }
+.story-hero-credit { font: 400 0.75rem/1.4 var(--type); color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 8px; }
+@media (min-width: 900px) {
+  .story-hero { grid-template-columns: auto minmax(0, 1fr); align-items: end; }
+  .story-hero-photo { padding-left: calc(var(--gutter) + var(--spine-w)); }
+  .story-hero-photo img { width: auto; max-width: 48vw; max-height: calc(100svh - 120px); }
+  .story-hero-text { padding: 0 var(--gutter) 0 clamp(24px, 4vw, 56px); }
+}
+
+/* Without a photo: the opening is type. The title huge, the page number (or contents number)
+   outlined in red behind it, like a folio. */
+.story-type { position: relative; display: grid; gap: 14px; align-content: end; min-height: 62svh; padding-top: clamp(40px, 8vw, 96px); padding-bottom: clamp(32px, 6vw, 72px); margin-bottom: clamp(24px, 4vw, 48px); border-bottom: 1px solid var(--line); }
+.story-type h1 { position: relative; font-size: clamp(3.5rem, 1.5rem + 9vw, 10rem); line-height: 0.88; text-wrap: balance; }
+.story-folio {
+  position: absolute; top: clamp(8px, 3vw, 40px); right: var(--gutter);
+  font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62;
+  font-size: clamp(6rem, 3rem + 14vw, 16rem); line-height: 0.8; text-transform: uppercase;
+  color: transparent; -webkit-text-stroke: 2px var(--red); opacity: 0.85;
+}
+.story-body { display: grid; gap: 1.2em; font: 400 1.0625rem/1.75 var(--type); color: #d8d3cc; }
+.story-body figure { margin: 1em 0; }
+.dek { font: 400 clamp(1.15rem, 1rem + 0.6vw, 1.45rem)/1.55 var(--type); color: var(--paper); }
+.pull p { font-family: var(--display); font-weight: 700; font-variation-settings: "wdth" 70; font-size: clamp(2rem, 1.2rem + 3.5vw, 4rem); line-height: 1; text-transform: uppercase; color: var(--paper); }
+.pull { margin: 0.5em 0; }
+.q { color: var(--red); }
+.read-rest { margin-top: 2em; padding-top: 32px; border-top: 1px solid var(--line); }
+
+/* ---------- Artists ---------- */
+.artists-page .poster { font-size: clamp(2rem, 1rem + 7vw, 8.5rem); }
+.person-head { position: relative; display: grid; gap: 14px; min-height: 56svh; align-content: end; }
+.person-name {
+  font-size: clamp(3.75rem, 1.2rem + 11.5vw, 13rem); line-height: 0.86; text-wrap: balance;
+}
+/* Long names (or handles) get smaller so they never break mid-word. */
+.person-name.is-long { font-size: clamp(1.9rem, 0.6rem + 7.5vw, 9rem); }
+.person-meta { display: grid; gap: 6px; }
+/* An artist's photo, whole and square, up in the corner. */
+.person-cut { position: absolute; top: 0; right: var(--gutter); width: clamp(140px, 26vw, 360px); }
+.person-cut img { width: 100%; box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45); }
+
+/* ---------- Shop ---------- */
+.product-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(20px, 3vw, 36px) clamp(12px, 2vw, 24px); }
+@media (max-width: 760px) { .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.product-card { display: grid; gap: 8px; align-content: start; }
+.product-card-title { font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 75; font-size: 1.375rem; line-height: 1.05; text-transform: uppercase; }
+.product-photo { position: relative; }
+/* Every piece shows whole: the frame keeps the grid even, the photo fits inside it uncropped. */
+.product-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: contain; background: var(--ink); }
+/* A second photo shows on hover. */
+.product-alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.35s ease; }
+@media (hover: hover) { .product-card:hover .product-alt { opacity: 1; } }
+.product-card-price { font: 400 0.9375rem/1.4 var(--type); color: var(--muted); }
+.product-card.is-sold .product-photo img, .product-card.is-sold .ph { opacity: 0.4; }
+/* SOLD OUT, stamped on at an angle like a rubber stamp. */
+.stamp {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-14deg);
+  padding: 6px 14px; border: 3px solid var(--red); border-radius: 4px; color: var(--red);
+  font: 700 clamp(1rem, 0.7rem + 1vw, 1.4rem)/1 var(--type); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap;
+}
+.sold { font: 700 0.75rem/1 var(--type); letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); }
+
+/* ---------- Event ---------- */
+.event-head { display: grid; gap: clamp(28px, 5vw, 72px); align-items: end; }
+.event-head.has-poster { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+.event-head > div { display: grid; gap: 12px; }
+.event-poster { max-width: 480px; }
+@media (max-width: 760px) { .event-head.has-poster { grid-template-columns: 1fr; } }
+.event-date {
+  font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62;
+  font-size: clamp(4rem, 1.5rem + 11vw, 13rem); line-height: 0.85; text-transform: uppercase; color: var(--red);
+}
+a.next-card { text-decoration: none; transition: transform 0.3s; }
+a.next-card:hover { transform: translateY(-4px); }
+
+/* ---------- Share ---------- */
+.button-big { min-height: 60px; padding: 0 30px; font-size: 1rem; }
+.share-door { min-height: calc(100svh - 72px); align-content: center; }
+.share-door .invite-text { gap: 22px; }
+.share-door .mission { margin: 0; font: 400 clamp(2.25rem, 1rem + 5vw, 5.5rem)/1.05 var(--type); letter-spacing: -0.03em; text-transform: none; max-width: 15ch; }
+
+/* ---------- Footer ---------- */
+.footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 22px; margin-bottom: 6px; }
+.footer-nav a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font: 400 0.8125rem/1 var(--type); letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none;
+}
+.footer-nav a:hover, .footer-line a:hover { color: var(--red); }
+.site-footer {
+  display: grid; justify-items: center; gap: 12px; text-align: center;
+  padding: 64px var(--gutter) calc(40px + env(safe-area-inset-bottom, 0px)) calc(var(--gutter) + var(--spine-w));
+  background: var(--charcoal);
+}
+.footer-mark { display: block; width: 120px; height: 41px; margin: 0 auto 8px; }
+.footer-line { font: 400 0.8125rem/1.5 var(--type); color: var(--muted); }
+
+/* Designer credit: "Website designed by" plus Ian's signature as the link. The signature is an
+   inline SVG filled with currentColor, so it takes the link color like text. */
+.footer-credit {
+  margin-top: 1.4rem;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.5rem 0.6rem;
+  font: 400 0.62rem/1.4 var(--type); letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(241, 238, 232, 0.7);
+}
+.footer-sig {
+  position: relative; display: inline-flex; align-items: center; padding-bottom: 0.3rem;
+  color: rgba(241, 238, 232, 0.9); text-decoration: none; transition: color 0.2s;
+}
+.footer-sig-mark { display: block; flex: none; width: 8.16rem; height: 1.35rem; fill: currentColor; }  /* 5169 × 855 */
+.footer-sig:hover, .footer-sig:focus-visible { color: #fff; }
+.footer-sig::after {
+  content: ""; position: absolute; left: 8%; right: 8%; bottom: 0;
+  height: 1px; background: currentColor; opacity: 0.45;
+  transition: left 0.25s, right 0.25s, opacity 0.25s;
+}
+.footer-sig:hover::after, .footer-sig:focus-visible::after { left: 0; right: 0; opacity: 0.9; }
+
+/* ---------- Scroll reveal: transform and opacity only ---------- */
+.js .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+.js .reveal.is-in { opacity: 1; transform: none; }
+
+/* ---------- Motion: buttons, prints, the emblem ----------
+   All of it hangs off html.motion, which main.js sets only when the visitor hasn't asked for reduced
+   motion, so switching that on turns every piece of this off. Moving parts use transform and opacity;
+   the flowing button colour moves a background, on hover only. */
+
+/* Outlined buttons fill with red ink from the left on hover, like a squeegee pass. */
+.site-nav a, .filter, .button-line { isolation: isolate; }
+.button-line { position: relative; }
+.motion :is(.site-nav a, .filter, .button-line)::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: var(--red);
+  transform: scaleX(0); transform-origin: left center; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.motion :is(.site-nav a, .filter, .button) { transition: transform 0.15s ease, color 0.2s, border-color 0.2s, background-color 0.2s; }
+@media (hover: hover) {
+  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):hover { color: #fff; border-color: var(--red); background: none; }
+  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):hover::before { transform: scaleX(1); }
+}
+
+/* Filled red buttons: on hover a hotter red flows through them, left to right, over and over. */
+.motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])) {
+  background-image: linear-gradient(100deg, var(--red) 0%, var(--red) 30%, #ff6b3d 45%, #ff9a5c 50%, #ff6b3d 55%, var(--red) 70%, var(--red) 100%);
+  background-size: 300% 100%; background-position: 100% 0;
+}
+@media (hover: hover) {
+  .motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])):hover { animation: flow 1.4s linear infinite; color: #fff; }
+}
+@keyframes flow { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+/* Every button gives a little when pressed. */
+.motion :is(.button:not(.button-off), .site-nav a, .filter, .reader-btn):active { transform: scale(0.96); }
+
+/* Arrows lean the way they point. */
+@media (hover: hover) { .motion .reader-prev:hover { transform: translateX(-4px); } .motion .reader-next:hover { transform: translateX(4px); } }
+.more span[aria-hidden] { display: inline-block; }
+.motion .more span[aria-hidden] { display: inline-block; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) { .motion .more:hover span[aria-hidden] { transform: translateX(5px); } }
+
+/* The big emblem on home: a slow red glow breathes behind it once it has built itself. */
+.cover-mark { position: relative; isolation: isolate; }
+.motion .cover-mark::before {
+  content: ""; position: absolute; inset: -14% -4%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(212, 42, 48, 0.55), rgba(212, 42, 48, 0) 70%);
+  opacity: 0; animation: breathe 5s ease-in-out 1.4s infinite;
+}
+@keyframes breathe { 0%, 100% { opacity: 0.25; transform: scale(0.94); } 50% { opacity: 0.8; transform: scale(1.04); } }
+/* The header emblem lifts when you point at it. */
+.motion .brand-mark { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) { .motion .brand:hover .brand-mark { transform: translateY(-2px) scale(1.06); } }
+
+/* Stencil prints pull in like a screen print: a charcoal sheet slides off with a red squeegee edge. */
+.stencil-print { position: relative; overflow: hidden; }
+.motion .stencil-print::after {
+  content: ""; position: absolute; inset: 0; background: var(--charcoal); box-shadow: -8px 0 0 var(--red);
+  transform: translateX(0); transition: transform 1.1s cubic-bezier(0.7, 0, 0.2, 1) 0.2s;
+}
+.motion .stencil.is-in .stencil-print::after { transform: translateX(calc(100% + 10px)); }
+
+/* The issue's pages on home arrive one after another. */
+.motion .home-page.reveal:nth-child(even) { transition-delay: 0.1s; }
+/* Artist names hop when you point at them. */
+.motion .poster a { display: inline-block; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s; }
+@media (hover: hover) { .motion .poster a:hover { transform: translateY(-4px); } }
+
+/* Reader: the page's number, story and credit rise in as each page arrives. */
+.motion .reader-info > * { transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+.motion .reader-page:not(.is-current) .reader-info > * { opacity: 0; transform: translateY(14px); }
+.motion .reader-page.is-current .reader-info > :nth-child(2) { transition-delay: 0.06s; }
+.motion .reader-page.is-current .reader-info > :nth-child(3) { transition-delay: 0.12s; }
+.motion .reader-page.is-current .reader-info > :nth-child(4) { transition-delay: 0.18s; }
+
+/* ---------- Colour that moves on its own (not only on hover) ---------- */
+/* The mission line: each word lands in red, then cools to off-white. */
+.motion .mission .w.is-lit { animation: ink-cool 1.2s ease-out both; }
+@keyframes ink-cool { from { color: #ff6b3d; } 35% { color: var(--red); } to { color: var(--paper); } }
+/* Filled red buttons: a hot glint crosses every few seconds (hover makes it flow constantly). */
+.motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])) { animation: glint 5s ease-in-out 2s infinite; }
+@keyframes glint { 0% { background-position: 100% 0; } 30%, 100% { background-position: 0 0; } }
+/* The spine: heat runs slowly down the red as you read. */
+.motion .spine-fill {
+  background: linear-gradient(180deg, var(--red) 0%, #ff6b3d 12%, var(--red) 24%, var(--red) 100%);
+  background-size: 100% 300%; animation: spine-heat 6s linear infinite;
+}
+@keyframes spine-heat { from { background-position: 0 100%; } to { background-position: 0 0; } }
+/* The reader's page number shimmers red to orange. */
+.motion .reader-no {
+  background: linear-gradient(100deg, var(--red) 0%, var(--red) 40%, #ff6b3d 50%, var(--red) 60%, var(--red) 100%);
+  background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: glint 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cover-mark.is-play .em-letters, .cover-mark.is-play .em-wings { animation: none; }
+  .rag-flip, .home-page img { transition: none; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+.lineup-poster > .meta { text-align: center; }
