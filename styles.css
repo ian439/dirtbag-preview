@@ -249,10 +249,10 @@ main > section > a.more, .more {
   .home-page a:hover img { transform: translateY(-6px); }
 }
 @media (max-width: 760px) { .home-pages { grid-template-columns: 1fr; } }
-/* Words on one side, a stencil print on the other (stacked on a phone). They never share space. */
+/* Words on one side, a big photo on the other (stacked on a phone). They never share space. */
 .home-split { display: grid; gap: clamp(28px, 5vw, 64px); align-items: center; }
 @media (min-width: 900px) { .home-split { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); } }
-/* Stencil prints (tools/stencil.py): the issue's photos cut into charcoal and red, used big as design. */
+/* A big photo that pulls in like a screen print (the wipe is further down, under Motion). */
 .stencil { margin: 0; }
 .stencil img { width: 100%; }
 .home-share, .home-find { display: grid; gap: 22px; justify-items: start; container-type: inline-size; }
@@ -593,7 +593,7 @@ a.next-card:hover { transform: translateY(-4px); }
 .motion .brand-mark { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
 @media (hover: hover) { .motion .brand:hover .brand-mark { transform: translateY(-2px) scale(1.06); } }
 
-/* Stencil prints pull in like a screen print: a charcoal sheet slides off with a red squeegee edge. */
+/* Photos marked .stencil pull in like a screen print: a charcoal sheet slides off with a red squeegee edge. */
 .stencil-print { position: relative; overflow: hidden; }
 .motion .stencil-print::after {
   content: ""; position: absolute; inset: 0; background: var(--charcoal); box-shadow: -8px 0 0 var(--red);
