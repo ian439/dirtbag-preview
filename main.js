@@ -5,16 +5,23 @@
   // iPhone Safari only shows :active press states when the page listens for touches.
   document.addEventListener('touchstart', function () {}, { passive: true });
 
-  // Emblem: the red DB lands, then the white wings open. Once on load, again on tap.
   var mark = document.querySelector('.cover-mark');
-  function play() {
-    if (reduce || !mark) return;
-    mark.classList.remove('is-play');
-    void mark.getBoundingClientRect();
-    mark.classList.add('is-play');
+
+  // Phones have no hover, so buttons play their hover look by themselves as they come into view,
+  // one after another (CSS: .is-shown under (hover: none)). Each plays once.
+  if (!reduce && window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
+    var hintables = document.querySelectorAll('.site-nav a, .button, .filter, .ig-row, .reader-btn, .more');
+    var queue = 0;
+    var shown = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        shown.unobserve(e.target);
+        var el = e.target;
+        setTimeout(function () { el.classList.add('is-shown'); }, 700 + (queue++ % 6) * 180);
+      });
+    }, { threshold: 0.9 });
+    hintables.forEach(function (el) { shown.observe(el); });
   }
-  play();
-  if (mark) mark.addEventListener('click', play);
 
   // Story filters on the issue page: everything is in the HTML, this only hides and shows.
   // The choice goes in the address (?s=music) so a filtered view can be shared.
@@ -102,9 +109,9 @@
     setCurrent(nearest());
   }
 
-  // The mission line sets itself word by word as the page opens (on home, once the emblem has landed).
+  // The mission line sets itself word by word as the page opens (on home, just after the emblem).
   var autoWords = document.querySelectorAll('.mission-auto .w');
-  var wordsStart = mark ? 900 : 250;
+  var wordsStart = mark ? 600 : 250;
   autoWords.forEach(function (w, i) {
     if (reduce) return w.classList.add('is-lit');
     setTimeout(function () { w.classList.add('is-lit'); }, wordsStart + i * 110);

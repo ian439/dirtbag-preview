@@ -135,23 +135,10 @@ p { margin: 0; }
 .opening-text { display: grid; justify-items: start; gap: clamp(18px, 3vh, 28px); }
 
 .cover-kicker { font: 400 0.8125rem/1.4 var(--type); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.cover-mark { background: none; border: 0; padding: 0; cursor: pointer; width: min(440px, 72vw); }
-/* The logo in two layers, stacked exactly: the wings and shield, and the red letters on top. */
-.cover-layers { display: grid; }
-.cover-layers img { grid-area: 1 / 1; width: 100%; }
-/* The emblem builds itself: the red DB drops in, then the white wings open out from the center. */
-.em-wings, .em-letters { transform-origin: 50% 50%; }
-.cover-mark.is-play .em-letters { animation: em-letters 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-.cover-mark.is-play .em-wings { animation: em-wings 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) 0.45s both; }
-@keyframes em-letters {
-  from { opacity: 0; transform: translateY(-30%) scale(1.3); }
-  60%  { opacity: 1; }
-  to   { opacity: 1; transform: none; }
-}
-@keyframes em-wings {
-  from { opacity: 0; transform: scaleX(0.15); }
-  to   { opacity: 1; transform: none; }
-}
+.cover-mark { display: block; width: min(440px, 72vw); height: auto; }
+/* The emblem just fades up once, softly. */
+.motion .cover-mark { animation: mark-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+@keyframes mark-in { from { opacity: 0; transform: translateY(10px); } }
 /* ---------- Sections ---------- */
 main > section, main > .is-off > section { padding-inline: calc(var(--gutter) + var(--spine-w)) var(--gutter); }
 .section-head { display: grid; gap: 10px; margin-bottom: clamp(28px, 5vw, 56px); }
@@ -619,14 +606,6 @@ a.next-card:hover { transform: translateY(-4px); }
 .motion .more span[aria-hidden] { display: inline-block; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
 @media (hover: hover) { .motion .more:hover span[aria-hidden] { transform: translateX(5px); } }
 
-/* The big emblem on home: a slow red glow breathes behind it once it has built itself. */
-.cover-mark { position: relative; isolation: isolate; }
-.motion .cover-mark::before {
-  content: ""; position: absolute; inset: -14% -4%; z-index: -1; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(212, 42, 48, 0.55), rgba(212, 42, 48, 0) 70%);
-  opacity: 0; animation: breathe 5s ease-in-out 1.4s infinite;
-}
-@keyframes breathe { 0%, 100% { opacity: 0.25; transform: scale(0.94); } 50% { opacity: 0.8; transform: scale(1.04); } }
 /* The header emblem lifts when you point at it. */
 .motion .brand-mark { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
 @media (hover: hover) { .motion .brand:hover .brand-mark { transform: translateY(-2px) scale(1.06); } }
@@ -672,34 +651,38 @@ a.next-card:hover { transform: translateY(-4px); }
   animation: glint 4s ease-in-out infinite;
 }
 
-/* ---------- Phones: every button answers your thumb ----------
-   There's no hover on a phone, so each button gets its own press state instead: it shrinks a little
-   and fills (outlined ones with red ink, red ones with a hotter red) the moment you touch it. */
+/* ---------- Phones: buttons show themselves before you touch them ----------
+   There's no hover on a phone, so each button plays its hover look by itself as it comes into view
+   (main.js adds .is-shown, staggered): red ink sweeps through the outlined ones, a hot flow runs through
+   the red ones, the arrows nudge. Like the PHOTO / DESIGN buttons on ianmalone.com. A press is only a
+   small give. */
 a, button { -webkit-tap-highlight-color: transparent; }
 @media (hover: none) {
-  :is(.button, .site-nav a, .filter, .reader-btn, .ig-row, .reader-dot, .home-page a, .more, .poster a) { transition: transform 0.12s ease, color 0.12s, border-color 0.12s, background-color 0.12s; }
-  :is(.button:not(.button-off), .site-nav a, .filter, .reader-btn):active { transform: scale(0.93); }
-  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):active { color: #fff; border-color: var(--red); }
-  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):active::before { transform: scaleX(1); transition-duration: 0.18s; }
-  :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])):active { background-color: #ff6b3d; background-image: none; }
-  .reader-btn:active { border-color: var(--red); color: #fff; }
-  .reader-btn:active::before { transform: scale(1); transition-duration: 0.15s; }
-  .ig-row:active { color: var(--red); }
-  .ig-row:active .ig-button { transform: scale(0.88); border-color: var(--red); }
-  .motion .ig-row:active .ig-button { color: #fff; }
-  .motion .ig-row:active .ig-button::before { transform: scaleX(1); transition-duration: 0.15s; }
-  .ig-button { transition: transform 0.12s ease, border-color 0.12s; }
-  .home-page a:active img, .reader-fig a:active { transform: scale(0.98); }
-  .home-page img, .reader-fig a { transition: transform 0.15s ease; }
-  .more:active { color: var(--paper); }
-  .more:active span[aria-hidden] { transform: translateX(6px); }
-  .poster a:active { color: var(--red); -webkit-text-stroke: 0; transform: scale(0.96); }
-  .reader-dot:active::before { background: var(--red); }
+  :is(.button, .site-nav a, .filter, .reader-btn, .ig-button, .poster a) { transition: transform 0.15s ease; }
+  :is(.button:not(.button-off), .site-nav a, .filter, .reader-btn, .ig-row .ig-button):active { transform: scale(0.96); }
+  .more:active span[aria-hidden] { transform: translateX(5px); }
+
+  .motion :is(.site-nav a:not(.nav-shop):not([aria-current]), .filter:not([aria-pressed="true"]), .button-line).is-shown { animation: ink-text 1.5s ease; }
+  .motion :is(.site-nav a:not(.nav-shop):not([aria-current]), .filter:not([aria-pressed="true"]), .button-line).is-shown::before { animation: ink-pass 1.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
+  .motion .ig-row.is-shown .ig-button { animation: ink-text 1.5s ease; }
+  .motion .ig-row.is-shown .ig-button::before { animation: ink-pass 1.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
+  .motion .reader-btn.is-shown::before { animation: ring-pass 1.4s cubic-bezier(0.65, 0, 0.35, 1) both; }
+  .motion .reader-btn.is-shown { animation: ink-text 1.4s ease; }
+  .motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])).is-shown { animation: flow 1.2s linear 2, glint 5s ease-in-out 4s infinite; }
+  .motion .more.is-shown span[aria-hidden] { animation: nudge 1.2s ease-in-out 2; }
 }
+@keyframes ink-pass {
+  0% { transform: scaleX(0); transform-origin: left center; }
+  40%, 55% { transform: scaleX(1); transform-origin: left center; }
+  56% { transform: scaleX(1); transform-origin: right center; }
+  100% { transform: scaleX(0); transform-origin: right center; }
+}
+@keyframes ring-pass { 0%, 100% { transform: scale(0); } 45%, 60% { transform: scale(1); } }
+@keyframes ink-text { 35%, 60% { color: #fff; } }
+@keyframes nudge { 0%, 100% { transform: none; } 50% { transform: translateX(5px); } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .cover-mark.is-play .em-letters, .cover-mark.is-play .em-wings { animation: none; }
   .rag-flip, .home-page img { transition: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
 }
