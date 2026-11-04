@@ -656,6 +656,7 @@ legend .contact-hint { margin-left: 0.5em; }
 }
 .footer-sig-mark { display: block; flex: none; width: 8.16rem; height: 1.35rem; fill: currentColor; }  /* 5169 × 855 */
 .footer-sig:hover, .footer-sig:focus-visible { color: #fff; }
+.footer-name { white-space: nowrap; font-size: 0.8rem; letter-spacing: 0.14em; color: rgba(241, 238, 232, 0.9); padding-bottom: 0.3rem; }
 .footer-sig::after {
   content: ""; position: absolute; left: 8%; right: 8%; bottom: 0;
   height: 1px; background: currentColor; opacity: 0.45;
@@ -888,3 +889,21 @@ html body.is-home .hf-share .button:hover { background: #1a1819; color: #fff; }
   .hf-sec { padding-right: 44px; }
   .hf-row { margin-right: -44px; }
 }
+
+/* ---------- The tab for the page you're on ----------
+   The page you're on is filled in the page's own text colour, with the page colour as its text, so it's the one
+   solid tab in the bar on every page and ground. The other tabs stay outlined. On the red pages, Support turns
+   charcoal so it can't be mistaken for the current tab. */
+html[data-page] .site-nav a[aria-current="page"],
+html[data-page] .site-nav a[aria-current="page"]:hover,
+html[data-page] .site-nav .nav-shop[aria-current="page"] {
+  background: var(--paper) !important; border-color: var(--paper) !important; color: var(--charcoal) !important;
+  font-weight: 700; animation: none;
+}
+html[data-page="artists"] .site-nav .nav-shop:not([aria-current]), html[data-page="artist"] .site-nav .nav-shop:not([aria-current]),
+body.on-red .site-nav .nav-shop:not([aria-current]) { background: #1a1819 !important; border-color: #fff !important; color: #fff !important; }
+
+/* ---------- Issue 01: the heading flows straight into the reader ---------- */
+.reader-intro { margin: 8px 0 0; max-width: 56ch; font: 400 clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem)/1.6 var(--type); color: var(--paper); }
+html[data-page="issue-01"] main > section.reader-head { min-height: 0; padding-top: clamp(96px, 12vw, 150px); padding-bottom: clamp(20px, 3vw, 32px); }
+html[data-page="issue-01"] main > section.reader { min-height: 0; padding-top: 0; padding-bottom: clamp(64px, 10vw, 120px); }
