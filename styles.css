@@ -1100,7 +1100,7 @@ html[data-page="share"] .contact-send { justify-self: center; }
 .brand:hover .brand-mark, .brand:focus-visible .brand-mark, .brand:active .brand-mark { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
 
 /* Hero title in Carol Gothic (Adobe Fonts web project zqx4jzq). It is a blackletter, so mixed case, no capitals, a little tighter. */
-.hf-title { font-family: "carol-gothic", var(--display); font-size: clamp(3rem, 1rem + 10.5vw, 11rem); line-height: 1; text-transform: none; letter-spacing: 0.01em; }
+.hf-title { font-family: "carol-gothic", var(--display); font-size: clamp(2.6rem, 0.8rem + 7vw, 8rem); line-height: 1; text-transform: none; letter-spacing: 0.01em; }
 
 /* Every page's top heading in Carol Gothic (mixed case, since it is a blackletter) */
 html[data-page] h1, .person-name, .story-hero h1, .story-type h1, .share-title { font-family: "carol-gothic", var(--display); text-transform: none; letter-spacing: 0.01em; line-height: 1; font-weight: 400; }
@@ -1128,3 +1128,11 @@ html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 1
   html[data-page] .site-header .site-nav a.nav-shop { background: #d42a30 !important; background-image: none !important; color: #fff !important; border: 2px solid #d42a30 !important; text-shadow: none !important; box-shadow: none !important; }
   html[data-page] .site-header .site-nav a[aria-current="page"] { border-color: #fff !important; }
 }
+
+/* Home: a hairline at the foot of the hero that draws itself downward and fades, a quiet hint to scroll */
+.hf-cue { position: absolute; left: 50%; bottom: 20px; width: 3px; height: 84px; margin-left: -1.5px; z-index: 4; pointer-events: none; background: #d42a30; box-shadow: 0 0 8px rgba(0, 0, 0, 0.55); transform-origin: top; transform: scaleY(0.35); opacity: 0.8; will-change: transform, opacity; }
+@media (prefers-reduced-motion: no-preference) { .hf-cue { animation: hf-cue 2.8s cubic-bezier(0.45, 0, 0.2, 1) 1.2s infinite; } }
+@keyframes hf-cue { 0% { transform: scaleY(0); opacity: 0; transform-origin: top; } 35% { opacity: 1; } 60% { transform: scaleY(1); transform-origin: top; opacity: 1; } 61% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; } }
+
+/* The red wall at the left: half the original width (10px to 5px). Layout spacing still uses --spine-w. */
+.spine { width: calc(5px + env(safe-area-inset-left, 0px)); }

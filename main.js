@@ -160,6 +160,7 @@
       hfPhoto.style.setProperty('--sy', String(p * 6));
       hfTop.style.transform = 'translate3d(0,' + (-p * 40) + 'px,0)';
       hfTop.style.opacity = String(Math.max(0, 1 - p * 2.6));
+      var hfCue = document.getElementById('hfCue'); if (hfCue) hfCue.style.visibility = p > 0.04 ? 'hidden' : 'visible';
     };
     var hfQueue = function () { if (!hfBusy) { hfBusy = true; requestAnimationFrame(hfTick); } };
     window.addEventListener('scroll', hfQueue, { passive: true });
