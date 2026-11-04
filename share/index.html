@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Courier+Prime&display=swap">
-  <link rel="stylesheet" href="/dirtbag-preview/styles.css?v=51">
+  <link rel="stylesheet" href="/dirtbag-preview/styles.css?v=52">
 </head>
 <body class="is-inner">
 
@@ -44,26 +44,27 @@
 
   <main>
 
-    <section class="share-band invite share-door">
+    <section class="share-top" aria-label="Share your work">
+      <h1 class="share-title">Share your work <span class="draft">Wording</span></h1>
+      <p class="share-tagline">An outlet for all art, in any shape or form.</p>
+      <p class="share-welcome">We accept any artist, of any form, any type.</p>
       <div class="invite-pages" aria-hidden="true"><div class="invite-page"><img src="/dirtbag-preview/images/issue-01-page-03.jpg" width="943" height="1400" alt="" loading="lazy"></div><div class="invite-page"><img src="/dirtbag-preview/images/issue-01-page-45.jpg" width="943" height="1400" alt="" loading="lazy"></div><div class="invite-page"><img src="/dirtbag-preview/images/issue-01-page-24.jpg" width="943" height="1400" alt="" loading="lazy"></div></div>
-      <div class="invite-text">
-        <p class="eyebrow">Share your work <span class="draft">Wording</span></p>
-        <h1 id="mission" class="mission mission-auto"><span class="visually-hidden">An outlet for all art, in any shape or form.</span><span aria-hidden="true"><span class="w">An</span> <span class="w">outlet</span> <span class="w">for</span> <span class="w">all</span> <span class="w">art,</span> <span class="w">in</span> <span class="w">any</span> <span class="w">shape</span> <span class="w">or</span> <span class="w">form.</span></span></h1>
-        <p class="intro-body reveal">We accept any artist, of any form, any type.</p>
-        <div class="actions reveal">
-          <a class="button button-big" href="#form">Share your work</a>
-        </div>
-      </div>
-      
     </section>
     <section class="contact" id="form" aria-labelledby="form-title">
       <div class="contact-side reveal">
-        <h2 id="form-title">Share your work</h2>
+        <h2 id="form-title" class="visually-hidden">Share your work</h2>
+        <div class="contact-tabs" data-tabs>
+          <div class="tab-list" role="tablist" aria-label="Ways to reach us">
+            <button class="tab" role="tab" type="button" id="tab-socials" aria-controls="panel-socials" aria-selected="true">Socials</button>
+            <button class="tab" role="tab" type="button" id="tab-contact" aria-controls="panel-contact" aria-selected="false" tabindex="-1">Contact</button>
+          </div>
+          <div class="tab-panel" role="tabpanel" id="panel-socials" aria-labelledby="tab-socials"><a class="ig-row" href="https://instagram.com/dirtbagsrag" target="_blank" rel="noopener" aria-label="@dirtbagsrag on Instagram (opens Instagram)">
+          <span class="ig-handle">@dirtbagsrag</span>
+          <span class="ig-button" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/></svg></span>
+        </a></div>
+          <div class="tab-panel" role="tabpanel" id="panel-contact" aria-labelledby="tab-contact" hidden><a class="tab-mail" href="mailto:dirtbagsrag@gmail.com">dirtbagsrag@gmail.com</a></div>
+        </div>
         <p><span class="draft">Form wording</span></p>
-        <dl class="contact-direct">
-          <div><dt class="eyebrow">Email</dt><dd><a href="mailto:dirtbagsrag@gmail.com">dirtbagsrag@gmail.com</a></dd></div>
-          <div><dt class="eyebrow">Instagram</dt><dd><a href="https://instagram.com/dirtbagsrag" target="_blank" rel="noopener">@dirtbagsrag</a></dd></div>
-        </dl>
       </div>
       <form class="contact-form reveal" action="https://api.web3forms.com/submit" method="POST" data-email="dirtbagsrag@gmail.com">
         <input type="hidden" name="access_key" value="d80d602a-c46d-4e58-80b0-ded80f09b46b">
@@ -154,7 +155,7 @@
     </p>
   </footer>
 
-  <script src="/dirtbag-preview/main.js?v=21" defer></script>
-  <script src="/dirtbag-preview/contact.js?v=21" defer></script>
+  <script src="/dirtbag-preview/main.js?v=22" defer></script>
+  <script src="/dirtbag-preview/contact.js?v=22" defer></script>
 </body>
 </html>
