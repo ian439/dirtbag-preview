@@ -7,28 +7,6 @@
 
   var mark = document.querySelector('.cover-mark');
 
-  // Socials / Contact tabs on the Share page: click or the arrow keys switch panels.
-  document.querySelectorAll('[data-tabs]').forEach(function (box) {
-    var tabs = box.querySelectorAll('[role="tab"]');
-    var show = function (tab, focus) {
-      tabs.forEach(function (t) {
-        var on = t === tab;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
-      });
-      if (focus) tab.focus();
-    };
-    tabs.forEach(function (t, i) {
-      t.addEventListener('click', function () { show(t, false); });
-      t.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-          e.preventDefault();
-          show(tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length], true);
-        }
-      });
-    });
-  });
 
   // Phones: the burger opens and closes the dropdown of tabs. A tap on a tab, a tap outside, or Escape closes it.
   var burger = document.querySelector('.nav-burger');
@@ -49,7 +27,7 @@
   // Phones have no hover, so buttons play their hover look by themselves as they come into view,
   // one after another (CSS: .is-shown under (hover: none)). Each plays once.
   if (!reduce && window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
-    var hintables = document.querySelectorAll('.site-nav a, .button, .filter, .ig-row, .reader-btn, .more');
+    var hintables = document.querySelectorAll('.site-nav a, .button, .filter, .ig-row:not(.is-draft), .reader-btn, .more');
     var queue = 0;
     var shown = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
