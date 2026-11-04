@@ -7,6 +7,22 @@
 
   var mark = document.querySelector('.cover-mark');
 
+  // Phones: the burger opens and closes the dropdown of tabs. A tap on a tab, a tap outside, or Escape closes it.
+  var burger = document.querySelector('.nav-burger');
+  var bar = document.querySelector('.site-header');
+  if (burger && bar) {
+    var setNav = function (open) {
+      bar.classList.toggle('nav-open', open);
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
+    };
+    burger.addEventListener('click', function (e) { e.stopPropagation(); setNav(!bar.classList.contains('nav-open')); });
+    document.addEventListener('click', function (e) { if (!bar.contains(e.target)) setNav(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setNav(false); });
+    bar.querySelectorAll('.site-nav a').forEach(function (a) { a.addEventListener('click', function () { setNav(false); }); });
+    window.matchMedia('(min-width: 521px)').addEventListener('change', function (e) { if (e.matches) setNav(false); });
+  }
+
   // Phones have no hover, so buttons play their hover look by themselves as they come into view,
   // one after another (CSS: .is-shown under (hover: none)). Each plays once.
   if (!reduce && window.matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {

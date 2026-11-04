@@ -802,8 +802,11 @@ html[data-page="share"] :is(h1, h2, h3, .eyebrow) { color: var(--paper); }
 
 /* Header: no background; every link sits on its own backing so it reads on any ground. */
 html[data-page] .site-header { background: transparent; border-bottom-color: transparent !important; }
-html[data-page] .site-nav a:not(.nav-shop) { background: color-mix(in srgb, var(--charcoal) 90%, transparent); border-color: color-mix(in srgb, var(--paper) 60%, transparent); color: var(--paper); min-height: 34px; padding: 0 12px; font-size: 0.8125rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
-html[data-page] .site-nav .nav-shop { min-height: 34px; padding: 0 12px; font-size: 0.8125rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
+html[data-page] .site-nav a:not(.nav-shop) { background: color-mix(in srgb, var(--charcoal) 90%, transparent); border-color: color-mix(in srgb, var(--paper) 60%, transparent); color: var(--paper); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
+html[data-page] .site-nav .nav-shop { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
+/* Tab size on computers and tablets. Phones keep the site's own compact tabs (see the max-width: 520px rule above). */
+@media (min-width: 521px) { html[data-page] .site-nav a { min-height: 34px; padding: 0 12px; font-size: 0.8125rem; } }
+@media (max-width: 520px) { html[data-page] .site-nav a { min-height: 30px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3); } }
 html[data-page="artists"] .site-nav .nav-shop, html[data-page="artist"] .site-nav .nav-shop, body.on-red .site-nav .nav-shop { background: #fff !important; border-color: #fff !important; color: #991e21 !important; }
 body.on-paper .site-nav a:not(.nav-shop) { background: rgba(241, 238, 232, 0.92); border-color: rgba(18, 17, 18, 0.55); color: #121112; }
 html[data-page="share"] .brand-mark, .brand-mark { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
@@ -907,3 +910,29 @@ body.on-red .site-nav .nav-shop:not([aria-current]) { background: #1a1819 !impor
 .reader-intro { margin: 8px 0 0; max-width: 56ch; font: 400 clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem)/1.6 var(--type); color: var(--paper); }
 html[data-page="issue-01"] main > section.reader-head { min-height: 0; padding-top: clamp(96px, 12vw, 150px); padding-bottom: clamp(20px, 3vw, 32px); }
 html[data-page="issue-01"] main > section.reader { min-height: 0; padding-top: 0; padding-bottom: clamp(64px, 10vw, 120px); }
+
+/* ---------- Phones: a burger that drops down the tabs (computers keep the row of tabs) ---------- */
+.nav-burger { display: none; }
+@media (max-width: 520px) {
+  .nav-burger {
+    display: inline-grid; align-content: center; gap: 5px; width: 44px; height: 44px; padding: 0 11px; margin-left: auto; cursor: pointer;
+    border: 1px solid color-mix(in srgb, var(--paper) 60%, transparent); background: color-mix(in srgb, var(--charcoal) 90%, transparent);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3); -webkit-tap-highlight-color: transparent;
+  }
+  .nav-burger span { display: block; height: 2px; background: var(--paper); transition: transform 0.25s ease, opacity 0.2s ease; }
+  .site-header.nav-open .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .site-header.nav-open .nav-burger span:nth-child(2) { opacity: 0; }
+  .site-header.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .site-header .site-nav {
+    display: none; position: absolute; top: calc(100% - 6px); right: 12px; width: min(280px, calc(100vw - 24px)); z-index: 25;
+    flex-direction: column; align-items: stretch; gap: 8px; padding: 12px;
+    background: var(--charcoal); border: 1px solid color-mix(in srgb, var(--paper) 30%, transparent); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+  }
+  .site-header.nav-open .site-nav { display: flex; }
+  /* Full names in the dropdown, big tap targets, and the page you're on filled in. */
+  html[data-page] .site-header .site-nav a { min-height: 48px; padding: 0 14px; font-size: 0.8125rem; letter-spacing: 0.08em; justify-content: flex-start; box-shadow: none; }
+  .site-header .site-nav .nav-long { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; }
+  .site-header .site-nav .nav-short { display: none; }
+  html[data-page] .site-header .site-nav a:not([aria-current="page"]):not(.nav-shop) { background: transparent !important; color: var(--paper) !important; border-color: color-mix(in srgb, var(--paper) 45%, transparent) !important; }
+  .site-header .site-nav a::after { inset: 0; }
+}
