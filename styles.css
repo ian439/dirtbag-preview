@@ -792,32 +792,36 @@ a, button { -webkit-tap-highlight-color: transparent; }
    Each page has a ground of its own, from the same palette (charcoal, red, paper), by remapping the colour
    variables. build.mjs puts data-page on <html>. */
 html[data-page="issue-01"], html[data-page="story"] { --charcoal: #0e0d0e; }                                                  /* ink black */
-html[data-page="artists"], html[data-page="artist"] { --charcoal: #f1eee8; --paper: #121112; --muted: #5b5557; --line: rgba(18, 17, 18, 0.18); } /* paper */
-html[data-page="share"] { --charcoal: #991e21; --paper: #fff; --muted: #f3d3d4; --line: rgba(255, 255, 255, 0.35); --red: #1a1819; }  /* spine red */
+html[data-page="artists"], html[data-page="artist"] { --charcoal: #991e21; --paper: #fff; --muted: #f3d3d4; --line: rgba(255, 255, 255, 0.35); --red: #1a1819; }  /* spine red */
+html[data-page="share"] { --charcoal: #f1eee8; --paper: #121112; --muted: #5b5557; --line: rgba(18, 17, 18, 0.18); } /* paper */
 html[data-page="support"] { --charcoal: #2b1112; --muted: #cfaeaf; --line: rgba(241, 238, 232, 0.2); }                          /* oxblood */
 html[data-page], html[data-page] body { background: var(--charcoal); color: var(--paper); }
 html[data-page] :is(.cover-kicker, .intro-body, .reader-dek, .story-body, .person-line, .home-signoff) { color: var(--paper); }
-html[data-page="artists"] :is(h1, h2, h3, .eyebrow), html[data-page="artist"] :is(h1, h2, h3, .eyebrow) { color: var(--paper); }
+html[data-page="share"] :is(h1, h2, h3, .eyebrow) { color: var(--paper); }
 
 /* Header: no background; every link sits on its own backing so it reads on any ground. */
 html[data-page] .site-header { background: transparent; border-bottom-color: transparent !important; }
 html[data-page] .site-nav a:not(.nav-shop) { background: color-mix(in srgb, var(--charcoal) 90%, transparent); border-color: color-mix(in srgb, var(--paper) 60%, transparent); color: var(--paper); min-height: 34px; padding: 0 12px; font-size: 0.8125rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
 html[data-page] .site-nav .nav-shop { min-height: 34px; padding: 0 12px; font-size: 0.8125rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
-html[data-page="share"] .site-nav .nav-shop, body.on-red .site-nav .nav-shop { background: #fff !important; border-color: #fff !important; color: #991e21 !important; }
+html[data-page="artists"] .site-nav .nav-shop, html[data-page="artist"] .site-nav .nav-shop, body.on-red .site-nav .nav-shop { background: #fff !important; border-color: #fff !important; color: #991e21 !important; }
 body.on-paper .site-nav a:not(.nav-shop) { background: rgba(241, 238, 232, 0.92); border-color: rgba(18, 17, 18, 0.55); color: #121112; }
 html[data-page="share"] .brand-mark, .brand-mark { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
 
 /* Inner pages: roomy sections, each starting with a red rule; each page its own shape. */
 html[data-page]:not([data-page="home"]) main > section { min-height: 78svh; padding-top: clamp(96px, 14vw, 180px); padding-bottom: clamp(64px, 10vw, 140px); }
 html[data-page]:not([data-page="home"]) main > section > :is(.section-head, .home-head, header):first-child { border-top: 3px solid var(--red); padding-top: 18px; }
-html[data-page="share"] main > section > :is(.section-head, .home-head, header):first-child { border-top-color: #fff; }
+html[data-page="artists"] main > section > :is(.section-head, .home-head, header):first-child, html[data-page="artist"] main > section > :is(.section-head, .home-head, header):first-child { border-top-color: #fff; }
 html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.6rem + 9vw, 10rem); }
 html[data-page="issue-01"] .reader-head { min-height: 0; padding-bottom: 0; }
 html[data-page="issue-01"] .stories { background: #181617; box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.5); }
 html[data-page="artists"] main > section { text-align: center; }
 html[data-page="artists"] h1 { letter-spacing: -0.02em; }
 html[data-page="share"] main > section { min-height: 100svh; display: grid; align-content: center; }
-html[data-page="share"] .button { background: #1a1819; color: #fff; border: 2px solid #fff; min-height: 64px; padding: 0 34px; font-size: 1.0625rem; }
+html[data-page="artists"] .button, html[data-page="artist"] .button { background: #1a1819; color: #fff; border: 2px solid #fff; }
+html[data-page="share"] .button { min-height: 64px; padding: 0 34px; font-size: 1.0625rem; }
+/* Ian's contact form on the paper ground: light boxes with dark text (its boxes are ink with paper text by default). */
+html[data-page="share"] .contact-form :is(input[type="text"], input[type="email"], textarea, select) { background: #fff; color: #121112; border-color: rgba(18, 17, 18, 0.35); }
+html[data-page="share"] .contact-form option { color: #121112; background: #fff; }
 html[data-page="support"] main > section { border-top: 0; }
 html[data-page="support"] main > section > :is(.section-head, .home-head, header):first-child { border-top: 0; padding-top: 0; }
 html[data-page="support"] h1 { font-size: clamp(3rem, 1.4rem + 7vw, 7.5rem); }
