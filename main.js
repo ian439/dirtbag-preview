@@ -113,6 +113,9 @@
   // changes tone over paper and red, and a quiet row of dashes shows which section you're in. Scroll only.
   var hfHero = document.getElementById('hf-hero');
   if (hfHero) {
+    // Opening the link always starts at the top of the home page, on a phone or a computer (no remembered
+    // scroll spot from a last visit), unless the link points at a part of the page.
+    if (!location.hash) { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; window.scrollTo(0, 0); }
     var hfTop = document.getElementById('hfTop');
     var hfPhoto = hfHero.querySelector('.hf-photo img');
     var hfDashes = document.querySelectorAll('#hfRail i');
