@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Courier+Prime&display=swap">
-  <link rel="stylesheet" href="/dirtbag-preview/styles.css?v=36">
+  <link rel="stylesheet" href="/dirtbag-preview/styles.css?v=42">
 </head>
 <body class="is-inner">
 
@@ -50,11 +50,86 @@
         <h1 id="mission" class="mission mission-auto"><span class="visually-hidden">An outlet for all art, in any shape or form.</span><span aria-hidden="true"><span class="w">An</span> <span class="w">outlet</span> <span class="w">for</span> <span class="w">all</span> <span class="w">art,</span> <span class="w">in</span> <span class="w">any</span> <span class="w">shape</span> <span class="w">or</span> <span class="w">form.</span></span></h1>
         <p class="intro-body reveal">We accept any artist, of any form, any type.</p>
         <div class="actions reveal">
-          <a class="button button-big" href="https://docs.google.com/forms/d/1WzvRDrUFeJ4InPJNIzpUsIOOylQacrXzDu0Zv1DnwNw/viewform" target="_blank" rel="noopener">Share your work</a>
-          <span class="draft">Check the form opens for the public</span>
+          <a class="button button-big" href="#form">Share your work</a>
         </div>
       </div>
       <p class="invite-credit">Photos: p. 03 <span class="draft">Photo credit</span> &middot; p. 45 <span class="draft">Photo credit</span> &middot; p. 24 <span class="draft">Photo credit</span></p>
+    </section>
+    <section class="contact" id="form" aria-labelledby="form-title">
+      <div class="contact-side reveal">
+        <h2 id="form-title">Share your work</h2>
+        <p><span class="draft">Form wording</span></p>
+        <dl class="contact-direct">
+          <div><dt class="eyebrow">Email</dt><dd><a href="mailto:dirtbagsrag@gmail.com">dirtbagsrag@gmail.com</a></dd></div>
+          <div><dt class="eyebrow">Instagram</dt><dd><a href="https://instagram.com/dirtbagsrag" target="_blank" rel="noopener">@dirtbagsrag</a></dd></div>
+        </dl>
+      </div>
+      <form class="contact-form reveal" action="https://api.web3forms.com/submit" method="POST" data-email="dirtbagsrag@gmail.com">
+        <input type="hidden" name="access_key" value="d80d602a-c46d-4e58-80b0-ded80f09b46b">
+        <input type="hidden" name="subject" value="New message from the Dirtbag site">
+        <input type="hidden" name="from_name" value="The Dirtbag's Rag site">
+        <!-- Spam trap: off-screen, so people never see it; bots fill it in. -->
+        <input class="contact-trap" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <fieldset class="contact-group">
+          <legend><span class="contact-no">01</span> <span data-share="Your work" data-other="Your message">Your work</span></legend>
+          <div class="field-pair">
+            <div class="field">
+              <label class="contact-label" for="about">What's this about?</label>
+              <div class="box box-select" data-guide="about"><select id="about" name="about">
+              <option value="">Choose one</option>
+              <option>Share my work</option>
+              <option>Something else</option>
+            </select><svg class="select-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square"/></svg></div>
+            </div>
+            <div class="field" data-share-only>
+              <label class="contact-label" for="makes">What do you make?</label>
+              <div class="box box-select" data-guide="makes"><select id="makes" name="makes">
+              <option value="">Choose one</option>
+              <option>Music</option>
+              <option>Climbing</option>
+              <option>Motorcycles</option>
+              <option>Food</option>
+              <option>Art</option>
+              <option>Something else</option>
+            </select><svg class="select-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square"/></svg></div>
+            </div>
+          </div>
+          <div class="field" data-share-only>
+            <label class="contact-label" for="links">Show us</label>
+            <div class="box" data-guide="links"><input id="links" name="links" type="text" inputmode="url" autocomplete="url" aria-describedby="links-hint"></div>
+            <p class="contact-hint" id="links-hint">Instagram, a website, or a Drive or Dropbox folder.</p>
+          </div>
+          <div class="field">
+            <label class="contact-label" for="message">Tell us about it</label>
+            <div class="box" data-guide="message"><textarea id="message" name="message" rows="5" required></textarea></div>
+          </div>
+        </fieldset>
+        <fieldset class="contact-group">
+          <legend><span class="contact-no">02</span> How to reach you</legend>
+          <div class="field-pair">
+            <div class="field">
+              <label class="contact-label" for="name">Name</label>
+              <div class="box" data-guide="name"><input id="name" name="name" type="text" autocomplete="name" required></div>
+            </div>
+            <div class="field">
+              <label class="contact-label" for="email">Email</label>
+              <div class="box" data-guide="email"><input id="email" name="email" type="email" autocomplete="email" required></div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="contact-label" for="instagram">Instagram (optional)</label>
+            <div class="box"><input id="instagram" name="instagram" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="@"></div>
+          </div>
+        </fieldset>
+        <div class="contact-send box" data-guide="send">
+          <button class="button button-big" type="submit">Send <span aria-hidden="true">&rarr;</span></button>
+        </div>
+        <p class="contact-error" role="alert" hidden>Something went wrong sending it. Email us instead: <a href="mailto:dirtbagsrag@gmail.com">dirtbagsrag@gmail.com</a></p>
+      </form>
+      <div class="contact-sent" tabindex="-1" hidden>
+        <h3>Sent</h3>
+        <p>Thanks. We read everything.</p>
+      </div>
     </section>
     
   </main>
@@ -76,6 +151,7 @@
     </p>
   </footer>
 
-  <script src="/dirtbag-preview/main.js?v=16" defer></script>
+  <script src="/dirtbag-preview/main.js?v=18" defer></script>
+  <script src="/dirtbag-preview/contact.js?v=18" defer></script>
 </body>
 </html>

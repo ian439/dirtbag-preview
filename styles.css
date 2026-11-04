@@ -130,12 +130,13 @@ p { margin: 0; }
 .opening {
   min-height: calc(100svh - 64px - env(safe-area-inset-top, 0px));
   max-width: 1400px; margin: 0 auto; padding-block: clamp(28px, 6vh, 64px);
-  display: grid; align-content: center; align-items: center; gap: clamp(32px, 5vw, 64px);
+  display: grid; align-content: start; align-items: start; gap: clamp(32px, 5vw, 64px);
 }
 .opening-text { display: grid; justify-items: start; gap: clamp(18px, 3vh, 28px); }
 
-.cover-kicker { font: 400 0.8125rem/1.4 var(--type); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.cover-mark { display: block; width: min(440px, 72vw); height: auto; }
+/* The title sits at the top, centred, with the logo centred under it. The mission and what follows stay left. */
+.cover-kicker { justify-self: center; text-align: center; font: 400 clamp(1.5rem, 1rem + 2.4vw, 2.75rem)/1.1 var(--type); letter-spacing: 0.12em; text-transform: uppercase; color: #fff; }
+.cover-mark { display: block; justify-self: center; width: min(440px, 72vw); height: auto; }
 /* The emblem just fades up once, softly. */
 .motion .cover-mark { animation: mark-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
 @keyframes mark-in { from { opacity: 0; transform: translateY(10px); } }
@@ -216,7 +217,8 @@ main > section > a.more, .more {
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; gap: 6px 16px;
   padding-top: 14px; margin-bottom: clamp(28px, 5vw, 56px); border-top: 1px solid var(--line);
 }
-.home-no { font: 400 0.875rem/1 var(--type); color: var(--red); }
+/* A short red dash in place of the old 01 / 02 numbers (Jameson and Ian, Nov 3). */
+.home-no { display: block; width: 28px; height: 3px; background: var(--red); align-self: center; }
 .home-head h2 { font-size: clamp(2rem, 1.2rem + 3.6vw, 4.5rem); line-height: 0.95; }
 .home-head .more { margin-top: 0; min-height: 0; }
 .home-head .draft { grid-column: 3; }
@@ -358,7 +360,7 @@ html:not(.motion) .toc-title { opacity: 1; }
 .reader-head { max-width: 1400px; margin: 0 auto; padding-block: clamp(24px, 4vw, 48px) clamp(16px, 3vw, 28px); display: grid; gap: 8px; }
 .reader { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(64px, 10vw, 120px); scroll-margin-top: 84px; }
 .reader-track {
-  list-style: none; margin: 0; padding: 0; display: flex; gap: 80px; overflow-x: auto; overscroll-behavior-x: contain;
+  list-style: none; margin: 0; padding: 0; display: flex; gap: 80px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory; scrollbar-width: none; outline-offset: 4px;
 }
 .reader-track::-webkit-scrollbar { display: none; }
@@ -367,7 +369,7 @@ html:not(.motion) .toc-title { opacity: 1; }
   display: grid; gap: 16px; align-content: start;
 }
 .reader-fig { margin: 0; }
-.reader-fig img { width: 100%; box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45); }
+.reader-fig img { display: block; width: 100%; box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45); }
 .reader-info { display: grid; gap: 8px; align-content: start; justify-items: start; }
 .reader-info .more { margin-top: 4px; }
 .reader-no { font-family: var(--display); font-weight: 900; font-variation-settings: "wdth" 62; font-size: clamp(2.5rem, 1.6rem + 4vw, 5rem); line-height: 0.9; text-transform: uppercase; color: var(--red); }
@@ -526,6 +528,104 @@ a.next-card:hover { transform: translateY(-4px); }
 .share-door { min-height: calc(100svh - 72px); align-content: center; }
 .share-door .invite-text { gap: 22px; }
 .share-door .mission { margin: 0; font: 400 clamp(2.25rem, 1rem + 5vw, 5.5rem)/1.05 var(--type); letter-spacing: -0.03em; text-transform: none; max-width: 15ch; }
+
+/* ---------- Contact form (Share page) ----------
+   Ian's block while Jameson works on home (Nov 3). Two numbered groups, small typewriter labels,
+   square boxes, the guiding comet in Dirtbag red. Words beside the form on wide screens, above it
+   on a phone. No photos in here. */
+.contact {
+  display: grid; gap: clamp(36px, 6vw, 72px); align-items: start;
+  max-width: 1400px; margin: 0 auto; padding-block: clamp(72px, 10vw, 140px);
+  scroll-margin-top: 72px;
+}
+.contact [hidden] { display: none !important; }
+.contact-side { display: grid; gap: 18px; justify-items: start; min-width: 0; }
+.contact-side h2 { font-size: clamp(2.75rem, 1.4rem + 5vw, 6rem); line-height: 0.92; max-width: 9ch; text-wrap: balance; }
+.contact-direct { margin: 12px 0 0; display: grid; gap: 18px; }
+.contact-direct dd { margin: 4px 0 0; font: 400 1.125rem/1.4 var(--type); overflow-wrap: anywhere; }
+.contact-direct a { text-decoration: none; }
+.contact-direct a:hover { color: var(--red); }
+@media (min-width: 900px) {
+  .contact { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+  .contact-form, .contact-sent { grid-column: 2; grid-row: 1; }
+  .contact-side { position: sticky; top: 104px; }
+}
+
+.contact-form { display: grid; gap: clamp(28px, 4vw, 40px); min-width: 0; }
+.contact-form fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.contact-group { display: grid; gap: 22px; }
+.contact-group > legend {
+  float: left; width: 100%; padding: 0 0 12px; margin-bottom: 4px; border-bottom: 1px solid var(--line);
+  font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 75; font-size: 1.5rem; line-height: 1; text-transform: uppercase;
+}
+.contact-group > legend + * { clear: both; }
+.contact-no { color: var(--red); margin-right: 0.35em; }
+.contact-label { display: block; padding: 0; margin-bottom: 8px; font: 400 0.75rem/1.4 var(--type); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.contact-hint { font: 400 0.8125rem/1.5 var(--type); letter-spacing: 0; text-transform: none; color: var(--muted); }
+legend .contact-hint { margin-left: 0.5em; }
+.field { display: grid; gap: 0; min-width: 0; }
+.field .contact-hint { margin-top: 8px; }
+.field-pair { display: grid; gap: 22px; }
+@media (min-width: 600px) { .field-pair { grid-template-columns: 1fr 1fr; } }
+
+/* The boxes: square, ink on charcoal, a red edge when you're in one. */
+.box { position: relative; }
+.contact-form :is(input[type="text"], input[type="email"], textarea) {
+  display: block; width: 100%; margin: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 0;
+  background: var(--ink); color: var(--paper); font: 400 1rem/1.5 var(--body);  /* 16px: iPhone Safari doesn't zoom in */
+  -webkit-appearance: none; appearance: none; transition: border-color 0.2s;
+}
+.contact-form textarea { min-height: 150px; resize: vertical; }
+.contact-form :is(input, textarea)::placeholder { color: var(--muted); opacity: 0.6; }
+.contact-form :is(input, textarea):focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(212, 42, 48, 0.25); }
+.contact-form :is(input, textarea):focus-visible { outline: none; }
+
+/* Dropdowns: the same square box, with our own arrow (the browser's looks different everywhere). */
+.contact-form select {
+  display: block; width: 100%; margin: 0; padding: 14px 44px 14px 16px; border: 1px solid var(--line); border-radius: 0;
+  background: var(--ink); color: var(--paper); font: 400 1rem/1.5 var(--body); cursor: pointer;
+  -webkit-appearance: none; appearance: none; transition: border-color 0.2s;
+}
+.contact-form select:invalid, .contact-form select:has(option[value=""]:checked) { color: var(--muted); }
+.contact-form option { color: var(--charcoal); background: var(--paper); }
+@media (hover: hover) { .contact-form select:hover { border-color: rgba(241, 238, 232, 0.5); } }
+.contact-form select:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(212, 42, 48, 0.25); }
+.select-arrow { position: absolute; right: 16px; top: 50%; width: 16px; height: 16px; margin-top: -8px; color: var(--muted); pointer-events: none; }
+.box-select:focus-within .select-arrow { color: var(--red); }
+
+.contact-send { justify-self: start; position: relative; }
+.contact-send .button span[aria-hidden] { margin-left: 10px; display: inline-block; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) { .motion .contact-send .button:hover span[aria-hidden] { transform: translateX(5px); } }
+.contact-form.is-sending .button { opacity: 0.6; cursor: progress; }
+.contact-error { padding: 14px 16px; border: 1px solid var(--red); background: rgba(212, 42, 48, 0.12); font: 400 0.9375rem/1.5 var(--type); }
+.contact-error a { color: #fff; overflow-wrap: anywhere; }
+.contact-trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* Sent: takes the form's place. */
+.contact-sent { position: relative; display: grid; gap: 12px; align-content: start; padding: clamp(28px, 5vw, 48px); border: 1px solid var(--line); outline: none; }
+.contact-sent h3 { font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); font-variation-settings: "wdth" 62; color: var(--red); }
+.contact-sent p { font: 400 1.0625rem/1.6 var(--type); }
+
+/* The guide: a red comet circling the edge of the next box to fill in (or Send), right on its border,
+   with a soft glow.
+   Like the contact form on ianmalone.com. Without motion it's a still red edge. */
+@property --orbit { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.is-guide::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; padding: 1.5px; pointer-events: none;
+  background: rgba(212, 42, 48, 0.7);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+}
+.motion .is-guide::before {
+  background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(212, 42, 48, 0.5) 290deg, #ff6b3d 340deg, #ffc49a 355deg, transparent 360deg);
+  animation: orbit 3.6s linear infinite;
+}
+.motion .is-guide::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: 0 0 22px -4px rgba(212, 42, 48, 0.6); animation: guide-breathe 3.6s ease-in-out infinite;
+}
+@keyframes orbit { to { --orbit: 360deg; } }
+@keyframes guide-breathe { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 
 /* ---------- Footer ---------- */
 .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 22px; margin-bottom: 6px; }
