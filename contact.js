@@ -42,8 +42,8 @@
     var next = 'send';
     for (var i = 0; i < steps.length; i++) if (!steps[i][1]) { next = steps[i][0]; break; }
     form.querySelectorAll('[data-guide]').forEach(function (el) {
-      // While the box itself has focus, its own red outline takes over from the comet.
-      el.classList.toggle('is-guide', el.dataset.guide === next && !el.contains(focused));
+      // The comet stays on while they type in the box too; it must never drop out.
+      el.classList.toggle('is-guide', el.dataset.guide === next);
     });
   }
 

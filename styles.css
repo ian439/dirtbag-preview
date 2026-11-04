@@ -624,6 +624,12 @@ legend .contact-hint { margin-left: 0.5em; }
   content: ""; position: absolute; inset: 0; pointer-events: none;
   box-shadow: 0 0 22px -4px rgba(212, 42, 48, 0.6); animation: guide-breathe 3.6s ease-in-out infinite;
 }
+/* Send is solid red, so a red comet on its edge disappears: on Send it runs in paper white instead,
+   still right on the edge. */
+.contact-send.is-guide::before { padding: 2px; background: rgba(241, 238, 232, 0.85); }
+.motion .contact-send.is-guide::before {
+  background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(241, 238, 232, 0.35) 290deg, var(--paper) 340deg, #fff 355deg, transparent 360deg);
+}
 @keyframes orbit { to { --orbit: 360deg; } }
 @keyframes guide-breathe { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 
@@ -988,6 +994,11 @@ html[data-page="share"] main > section.contact { padding-top: clamp(24px, 4vw, 4
 .tab:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .tab-panel { padding-top: 4px; }
 .tab-mail { font: 400 1.125rem/1.4 var(--type); overflow-wrap: anywhere; text-decoration: none; }
+/* The tabs and what's under them sit centred. Share is one column, so the side doesn't stick: stuck, it
+   slid over the form's labels as you scrolled. */
+html[data-page="share"] .contact-side { position: static; justify-items: center; }
+.tab-list { justify-content: center; }
+.tab-panel { text-align: center; }
 @media (max-width: 520px) {
   html[data-page="share"] main > section.share-top { padding-top: 12px; }
   html[data-page="share"] main > section.contact { padding-top: 20px; padding-bottom: 40px; }
