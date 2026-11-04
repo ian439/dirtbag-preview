@@ -936,3 +936,37 @@ html[data-page="issue-01"] main > section.reader { min-height: 0; padding-top: 0
   html[data-page] .site-header .site-nav a:not([aria-current="page"]):not(.nav-shop) { background: transparent !important; color: var(--paper) !important; border-color: color-mix(in srgb, var(--paper) 45%, transparent) !important; }
   .site-header .site-nav a::after { inset: 0; }
 }
+
+/* ---------- iPhone and other phones: less empty space, the brand palette only, less crowding ----------
+   Phones only (computers are untouched). The pages' roomy minimum heights were leaving screens of blank charcoal, so
+   sections now take just the room their content needs. The orange heat accents become the palette reds (emblem red and
+   spine red), and the preview-only yellow tags become plain outlined tags (the red DRAFT pills already match the palette). */
+@media (max-width: 520px) {
+  /* Space */
+  html[data-page]:not([data-page="home"]) main > section { min-height: 0; padding-top: 28px; padding-bottom: 40px; }
+  html[data-page="share"] main > section { min-height: 0; display: block; }
+  html[data-page="issue-01"] main > section.reader-head { padding-top: 20px; padding-bottom: 16px; }
+  html[data-page="issue-01"] main > section.reader { padding-bottom: 32px; }
+  html[data-page]:not([data-page="home"]) h1 { font-size: clamp(2.8rem, 2rem + 8vw, 4.2rem); }
+  html[data-page] .site-footer { padding-block: 36px; }
+  .hf-sec { min-height: 0; padding: 52px var(--gutter) 52px calc(var(--gutter) + var(--spine-w)); }
+  .hf-about { padding-block: 56px; }
+  .hf-break { margin-bottom: 22px; }
+  .hf-break h2 { font-size: clamp(2.4rem, 1.6rem + 6vw, 3.4rem); }
+  .hf-quote { font-size: clamp(1.9rem, 1.2rem + 5vw, 2.6rem); }
+  .hf-big { font-size: clamp(1.7rem, 1.2rem + 4vw, 2.3rem); margin-bottom: 20px; }
+  .hf-signoff { margin-top: 20px; }
+  .hf-more { margin-top: 16px; }
+  .hf-row { margin-right: calc(var(--gutter) * -1); }
+  .hf-names { font-size: clamp(1.3rem, 0.9rem + 3vw, 1.7rem); gap: 2px 14px; }
+  .hf-rail { display: none; }   /* the side dashes crowd a small screen */
+  /* The palette only: no orange. */
+  .motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])) {
+    background-image: linear-gradient(100deg, var(--red) 0%, var(--red) 30%, var(--spine) 50%, var(--red) 70%, var(--red) 100%);
+  }
+  .motion .spine-fill { background: linear-gradient(180deg, var(--red) 0%, var(--spine) 12%, var(--red) 24%, var(--red) 100%); background-size: 100% 300%; }
+  .motion .reader-no { background: linear-gradient(100deg, var(--red) 0%, var(--red) 40%, var(--spine) 50%, var(--red) 60%, var(--red) 100%); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; }
+  .motion .is-guide::before { background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(212, 42, 48, 0.5) 290deg, var(--red) 340deg, var(--paper) 355deg, transparent 360deg); }
+  .hidden-tag { background: transparent; color: inherit; border: 1px solid currentColor; }   /* preview-only tag */
+  .is-off { outline-color: var(--paper); }
+}
