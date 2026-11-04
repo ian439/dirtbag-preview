@@ -109,6 +109,36 @@
     setCurrent(nearest());
   }
 
+  // Home: the hero fades its logo and title as the next section rises, the photo drifts a little, the nav
+  // changes tone over paper and red, and a quiet row of dashes shows which section you're in. Scroll only.
+  var hfHero = document.getElementById('hf-hero');
+  if (hfHero) {
+    var hfTop = document.getElementById('hfTop');
+    var hfPhoto = hfHero.querySelector('.hf-photo img');
+    var hfDashes = document.querySelectorAll('#hfRail i');
+    var hfSecs = ['hf-hero', 'hf-about', 'hf-issue', 'hf-artists', 'hf-share', 'hf-find'].map(function (id) { return document.getElementById(id); });
+    var hfAbout = document.getElementById('hf-about');
+    var hfBusy = false;
+    var hfTick = function () {
+      hfBusy = false;
+      var h = window.innerHeight, cur = 0;
+      hfSecs.forEach(function (el, i) { if (el && el.getBoundingClientRect().top < h * 0.5) cur = i; });
+      hfDashes.forEach(function (d, i) { d.setAttribute('aria-current', String(i === cur)); });
+      var tone = hfSecs[cur].dataset.tone || 'dark';
+      document.body.classList.toggle('on-paper', tone === 'paper');
+      document.body.classList.toggle('on-red', tone === 'red');
+      if (reduce) return;
+      var p = Math.min(1, Math.max(0, 1 - hfAbout.getBoundingClientRect().top / h));
+      hfPhoto.style.setProperty('--sy', String(p * 6));
+      hfTop.style.transform = 'translate3d(0,' + (-p * 40) + 'px,0)';
+      hfTop.style.opacity = String(Math.max(0, 1 - p * 2.6));
+    };
+    var hfQueue = function () { if (!hfBusy) { hfBusy = true; requestAnimationFrame(hfTick); } };
+    window.addEventListener('scroll', hfQueue, { passive: true });
+    window.addEventListener('resize', hfQueue);
+    hfTick();
+  }
+
   // The mission line sets itself word by word as the page opens (on home, just after the emblem).
   var autoWords = document.querySelectorAll('.mission-auto .w');
   var wordsStart = mark ? 600 : 250;
