@@ -1038,8 +1038,9 @@ html[data-page="share"] .contact-side { position: static; }
 /* The tagline animation on phones: red, then off-white (no orange, to stay on the palette). */
 @media (max-width: 520px) { @keyframes ink-cool { from { color: var(--red); } 35% { color: var(--red); } to { color: var(--paper); } } }
 
-/* What this is: the words fade up with the scroll, in the page's own off-white (no colour flash). */
-.motion .hf-quote .w.is-lit { animation: none; }
+/* The home line (Ian, Nov 4): each word waits in grey, fills red as the scroll reaches it, then turns white. */
+.motion .hf-quote .w.is-lit { animation: ink-red-white 1.2s ease-out both; }
+@keyframes ink-red-white { 0%, 35% { color: var(--red); } to { color: var(--paper); } }
 
 /* A short description under a story's title (it doesn't give the story away). */
 .story-teaser { margin: var(--s-2) 0 0; max-width: var(--measure-lead); font: 400 var(--t-lead)/1.4 var(--type); color: var(--paper); }
@@ -1107,3 +1108,23 @@ html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 1
 .person-name { font-size: clamp(3.4rem, 1.8rem + 10vw, 10rem); }
 .person-name.is-long, .person-head.has-photo .person-name.is-long { font-size: clamp(3rem, 1.6rem + 8vw, 8rem); }
 .person-head.has-photo .person-name { font-size: clamp(3rem, 1.6rem + 9vw, 9rem); }
+
+/* Home: sections are separated by a red line, no shadow (same line that sets the tagline off) */
+.hf-sec, .hf-issue, .hf-find, .hf-aboutus { box-shadow: none; }
+.hf-aboutus, .hf-issue, .hf-artists, .hf-find { border-top: 3px solid var(--red); }
+
+/* Phones: the burger is just three lines, and the opened menu has no box behind the tabs */
+@media (max-width: 520px) {
+  .site-header .nav-burger { background: transparent; border: 0; box-shadow: none; }
+  .site-header .nav-burger span { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
+  .site-header .site-nav { background: transparent; border: 0; box-shadow: none; padding: 0; }
+  .site-header .site-nav a { text-shadow: none; }
+}
+
+/* Phones: every tab in the opened menu is a red box with white text, easy to read over anything */
+@media (max-width: 520px) {
+  html[data-page] .site-header .site-nav a,
+  html[data-page] .site-header .site-nav a:not([aria-current="page"]):not(.nav-shop),
+  html[data-page] .site-header .site-nav a.nav-shop { background: #d42a30 !important; background-image: none !important; color: #fff !important; border: 2px solid #d42a30 !important; text-shadow: none !important; box-shadow: none !important; }
+  html[data-page] .site-header .site-nav a[aria-current="page"] { border-color: #fff !important; }
+}
