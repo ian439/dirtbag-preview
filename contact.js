@@ -2,6 +2,39 @@
 // Web3Forms on its own. With it: the message sends without leaving the page, the work questions hide
 // for Something else, and the guide (a red comet round the edge) sits on the next box to fill.
 (function () {
+  // The copy button beside the email puts the address on the clipboard and shows a tick for a moment.
+  // (Clicking the address itself opens their mail app.)
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    var label = btn.getAttribute('aria-label');
+    var status = btn.parentElement.querySelector('[role="status"]');
+    btn.addEventListener('click', function () {
+      var text = btn.dataset.copy;
+      var done = function () {
+        btn.classList.add('is-copied');
+        btn.setAttribute('aria-label', 'Copied');
+        if (status) status.textContent = 'Email address copied';
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          btn.setAttribute('aria-label', label);
+          if (status) status.textContent = '';
+        }, 1600);
+      };
+      // Older browsers, or a page not on https: copy through a hidden text box instead.
+      var fallback = function () {
+        var box = document.createElement('textarea');
+        box.value = text;
+        box.setAttribute('readonly', '');
+        box.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+        document.body.appendChild(box);
+        box.select();
+        try { if (document.execCommand('copy')) done(); } catch (e) {}
+        box.remove();
+      };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback);
+      else fallback();
+    });
+  });
+
   var form = document.querySelector('.contact-form');
   if (!form) return;
   var sent = document.querySelector('.contact-sent');

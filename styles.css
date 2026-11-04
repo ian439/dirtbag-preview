@@ -610,25 +610,26 @@ legend .contact-hint { margin-left: 0.5em; }
    with a soft glow.
    Like the contact form on ianmalone.com. Without motion it's a still red edge. */
 @property --orbit { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-.is-guide::before {
+.is-guide::before, .contact-send::before {
   content: ""; position: absolute; inset: 0; z-index: 1; padding: 1.5px; pointer-events: none;
   background: rgba(212, 42, 48, 0.7);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
 }
-.motion .is-guide::before {
+.motion .is-guide::before, .motion .contact-send::before {
   background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(212, 42, 48, 0.5) 290deg, #ff6b3d 340deg, #ffc49a 355deg, transparent 360deg);
   animation: orbit 3.6s linear infinite;
 }
-.motion .is-guide::after {
+.motion .is-guide::after, .motion .contact-send::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   box-shadow: 0 0 22px -4px rgba(212, 42, 48, 0.6); animation: guide-breathe 3.6s ease-in-out infinite;
 }
-/* Send is solid red, so a red comet on its edge disappears: on Send it runs in paper white instead,
-   still right on the edge. */
-.contact-send.is-guide::before { padding: 2px; background: rgba(241, 238, 232, 0.85); }
-.motion .contact-send.is-guide::before {
-  background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(241, 238, 232, 0.35) 290deg, var(--paper) 340deg, #fff 355deg, transparent 360deg);
+/* Send always has its comet, whatever box the guide is on. Send is solid red, so a red comet on its edge
+   disappears: on Send it runs in paper white instead, still right on the edge. Literal colours, since
+   pages remap --paper (on Share it's near black). */
+.contact-form .contact-send::before { padding: 2px; background: rgba(241, 238, 232, 0.85); }
+.motion .contact-form .contact-send::before {
+  background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(241, 238, 232, 0.35) 290deg, #f1eee8 340deg, #fff 355deg, transparent 360deg);
 }
 @keyframes orbit { to { --orbit: 360deg; } }
 @keyframes guide-breathe { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
@@ -987,17 +988,24 @@ html[data-page="share"] main > section.share-top { max-width: 1400px; margin: 0 
 .share-top .invite-pages { margin: clamp(14px, 2.5vw, 24px) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(8px, 2vw, 22px); align-items: start; max-width: 900px; }
 .share-top .invite-page:nth-child(n) { margin-top: 0; }
 html[data-page="share"] main > section.contact { padding-top: clamp(24px, 4vw, 40px); padding-bottom: clamp(36px, 6vw, 64px); gap: clamp(20px, 3vw, 36px); }
-.reach { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); width: 100%; }
-.reach-col { display: grid; gap: 6px; align-content: start; min-width: 0; }
-.reach-title { margin: 0 0 4px; padding-bottom: 8px; border-bottom: 2px solid var(--line); font: 400 0.8125rem/1 var(--type); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.reach-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.reach .ig-row { display: flex; width: 100%; justify-content: space-between; gap: 10px; font-size: 0.9375rem; line-height: 1.3; text-align: left; }
+/* Just our Instagram and our email, centred, no labels. */
+.reach { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px clamp(20px, 4vw, 40px); width: 100%; }
 .reach .ig-handle { min-width: 0; overflow-wrap: anywhere; }
 .reach .ig-button { flex: none; }
-.ig-row.is-draft, .ig-row.is-draft:hover { color: var(--muted); cursor: default; }
-.ig-row.is-draft:hover .ig-button { border-color: rgba(241, 238, 232, 0.3); }
-.motion .ig-row.is-draft:hover .ig-button::before { transform: scaleX(0); }
-/* Ian: the side doesn't stick, since stuck it slid over the form's labels as you scrolled. (The tabs are gone; Socials and Contact sit side by side.) */
+/* The email: click the address to write to us, or the button beside it to copy it. */
+.reach-mail { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font: 400 1rem/1 var(--type); color: var(--paper); }
+.reach-mail a { color: inherit; text-decoration: none; }
+.reach-mail a:hover { color: var(--red); }
+.reach-copy { padding: 0; background: none; color: inherit; cursor: pointer; }
+.reach-copy svg + svg, .reach-copy.is-copied svg:first-child { display: none; }
+.reach-copy.is-copied svg + svg { display: block; }
+.reach-copy.is-copied { border-color: var(--red); color: var(--red); }
+@media (hover: hover) {
+  .reach-copy:hover { border-color: var(--red); }
+  .motion .reach-copy:hover { color: #fff; }
+  .motion .reach-copy:hover::before { transform: scaleX(1); }
+}
+/* Ian: the side doesn't stick, since stuck it slid over the form's labels as you scrolled. */
 html[data-page="share"] .contact-side { position: static; }
 @media (max-width: 520px) {
   html[data-page="share"] main > section.share-top { padding-top: 12px; }
@@ -1034,3 +1042,34 @@ html[data-page="share"] .contact-side { position: static; }
 
 .hf-point-wide { grid-column: 1 / -1; max-width: 62ch; }
 @media (max-width: 700px) { .hf-point-wide { grid-column: auto; } }
+
+/* ---------- One tight flow on every inner page (all widths) ----------
+   No tall minimum heights, small even gaps between sections. The first section only clears the fixed tabs. */
+html[data-page]:not([data-page="home"]) main > section,
+html[data-page="share"] main > section { min-height: 0; padding-top: clamp(28px, 4vw, 48px); padding-bottom: clamp(28px, 4vw, 48px); }
+html[data-page]:not([data-page="home"]) main > section:first-child,
+html[data-page="issue-01"] main > section.reader-head { padding-top: clamp(76px, 8vw, 96px); }
+html[data-page="issue-01"] main > section.reader { padding-top: 0; }
+html[data-page]:not([data-page="home"]) main > section > :is(.section-head, .home-head, header):first-child { padding-top: 12px; }
+html[data-page="share"] main > section { display: block; }
+@media (min-width: 900px) { html[data-page="share"] main > section.contact { display: grid; } }
+.story-type, .person-head { min-height: 0; padding-top: 0; padding-bottom: clamp(16px, 3vw, 28px); margin-bottom: 0; }
+.page-head { padding-block: 0 clamp(20px, 3vw, 32px); }
+.stories, .more-stories, .shop-section, .shop-strip, .people, .lineup { padding-bottom: clamp(24px, 4vw, 40px); }
+html[data-page]:not([data-page="home"]) :is(h1, h2) { margin-bottom: 0.3em; }
+html[data-page]:not([data-page="home"]) :is(h1, .person-name, .share-title) { margin-bottom: 14px; }
+html[data-page]:not([data-page="home"]) .section-head { margin-bottom: clamp(16px, 2.5vw, 24px); }
+html[data-page]:not([data-page="home"]) .pull { margin-bottom: clamp(16px, 2.5vw, 24px); }
+
+/* Home: Share and Find us are compact, sized to their content */
+.hf-share, .hf-find { min-height: 0; padding-top: clamp(40px, 5vw, 64px); padding-bottom: clamp(40px, 5vw, 64px); }
+.hf-share :is(h2, h3, .hf-big), .hf-find :is(h2, h3, .hf-big) { margin-top: 0; margin-bottom: 14px; }
+.hf-find :is(p, a) { margin-top: 0; margin-bottom: 10px; }
+
+/* Ian: one column at every width. Instagram and email sit centred above the form, not in a column on the left. */
+/* From the photos down, one centred column as wide as the photos: Instagram and email, then the form,
+   its boxes filling the column, and Send centred under them. */
+html[data-page="share"] .share-top .invite-pages { width: 100%; margin-inline: auto; }
+html[data-page="share"] main > section.contact > * { width: 100%; max-width: 900px; margin-inline: auto; }
+html[data-page="share"] .contact-side { justify-items: center; }
+html[data-page="share"] .contact-send { justify-self: center; }
