@@ -1007,3 +1007,30 @@ html[data-page="share"] .contact-side { position: static; }
 
 /* The contact section keeps its two columns on wide screens (Socials and Contact on the left, the form on the right). */
 @media (min-width: 900px) { html[data-page="share"] main > section.contact { display: grid; } }
+
+
+/* ---------- Home: About us ---------- */
+.hf-aboutus { background: var(--paper); color: #121112; box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.45); min-height: 0; }
+.hf-message { margin: 0 0 clamp(28px, 5vw, 56px); max-width: 18ch; font: 400 clamp(2rem, 1rem + 5vw, 5rem)/1.05 var(--type); letter-spacing: -0.03em; }
+.hf-points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 48px) clamp(24px, 5vw, 64px); max-width: 1100px; }
+.hf-point { display: grid; gap: 8px; align-content: start; padding-top: 14px; border-top: 2px solid #121112; }
+.hf-point h3 { font-size: 1.25rem; margin: 0; }
+.hf-point p { margin: 0; font: 400 clamp(1rem, 0.95rem + 0.3vw, 1.125rem)/1.55 var(--type); max-width: 40ch; }
+.hf-point .button { margin-top: 6px; }
+@media (max-width: 700px) {
+  .hf-points { grid-template-columns: 1fr; gap: 22px; }
+  .hf-message { font-size: clamp(1.8rem, 1.2rem + 4.5vw, 2.4rem); margin-bottom: 24px; }
+}
+
+/* The tagline animation on phones: red, then off-white (no orange, to stay on the palette). */
+@media (max-width: 520px) { @keyframes ink-cool { from { color: var(--red); } 35% { color: var(--red); } to { color: var(--paper); } } }
+
+/* What this is: the words fade up with the scroll, in the page's own off-white (no colour flash). */
+.motion .hf-quote .w.is-lit { animation: none; }
+
+/* A short description under a story's title (it doesn't give the story away). */
+.story-teaser { margin: 6px 0 0; max-width: 44ch; font: 400 clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem)/1.55 var(--type); color: var(--paper); }
+.story-type .story-teaser { margin-top: 10px; }
+
+.hf-point-wide { grid-column: 1 / -1; max-width: 62ch; }
+@media (max-width: 700px) { .hf-point-wide { grid-column: auto; } }

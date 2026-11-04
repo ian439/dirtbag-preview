@@ -136,8 +136,10 @@
     var hfTop = document.getElementById('hfTop');
     var hfPhoto = hfHero.querySelector('.hf-photo img');
     var hfDashes = document.querySelectorAll('#hfRail i');
-    var hfSecs = ['hf-hero', 'hf-about', 'hf-issue', 'hf-artists', 'hf-share', 'hf-find'].map(function (id) { return document.getElementById(id); });
+    var hfSecs = ['hf-hero', 'hf-about', 'hf-issue', 'hf-artists', 'hf-aboutus', 'hf-share', 'hf-find'].map(function (id) { return document.getElementById(id); });
     var hfAbout = document.getElementById('hf-about');
+    var hfWords = document.querySelectorAll('#hf-about .mission .w');
+    var hfQuote = document.querySelector('#hf-about .mission');
     var hfBusy = false;
     var hfTick = function () {
       hfBusy = false;
@@ -148,6 +150,12 @@
       document.body.classList.toggle('on-paper', tone === 'paper');
       document.body.classList.toggle('on-red', tone === 'red');
       if (reduce) return;
+      // The tagline's words light up as the quote travels from 85% to 35% of the screen height (and dim again going back up).
+      if (hfQuote) {
+        var qt = (h * 0.85 - hfQuote.getBoundingClientRect().top) / (h * 0.5);
+        var lit = Math.round(Math.max(0, Math.min(1, qt)) * hfWords.length);
+        hfWords.forEach(function (w, i) { w.classList.toggle('is-lit', i < lit); });
+      }
       var p = Math.min(1, Math.max(0, 1 - hfAbout.getBoundingClientRect().top / h));
       hfPhoto.style.setProperty('--sy', String(p * 6));
       hfTop.style.transform = 'translate3d(0,' + (-p * 40) + 'px,0)';
@@ -159,10 +167,9 @@
     hfTick();
   }
 
-  // The mission line sets itself word by word as the page opens (on home, just after the emblem).
-  var autoWords = document.querySelectorAll('.mission-auto .w');
+  // A tagline marked mission-auto sets itself word by word as the page opens.
   var wordsStart = mark ? 600 : 250;
-  autoWords.forEach(function (w, i) {
+  document.querySelectorAll('.mission-auto .w').forEach(function (w, i) {
     if (reduce) return w.classList.add('is-lit');
     setTimeout(function () { w.classList.add('is-lit'); }, wordsStart + i * 110);
   });
