@@ -136,7 +136,7 @@
     var hfTop = document.getElementById('hfTop');
     var hfPhoto = hfHero.querySelector('.hf-photo img');
     var hfDashes = document.querySelectorAll('#hfRail i');
-    var hfSecs = ['hf-hero', 'hf-about', 'hf-issue', 'hf-artists', 'hf-aboutus', 'hf-share', 'hf-find'].map(function (id) { return document.getElementById(id); });
+    var hfSecs = ['hf-hero', 'hf-about', 'hf-aboutus', 'hf-issue', 'hf-artists', 'hf-share', 'hf-find'].map(function (id) { return document.getElementById(id); });
     var hfAbout = document.getElementById('hf-about');
     var hfWords = document.querySelectorAll('#hf-about .mission .w');
     var hfQuote = document.querySelector('#hf-about .mission');
