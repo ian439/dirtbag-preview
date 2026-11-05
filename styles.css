@@ -1136,3 +1136,12 @@ html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 1
 
 /* The red wall at the left: half the original width (10px to 5px). Layout spacing still uses --spine-w. */
 .spine { width: calc(5px + env(safe-area-inset-left, 0px)); }
+
+/* Home: the wings logo sits a little higher and a little bigger */
+.hf-hero { padding-top: calc(48px + env(safe-area-inset-top, 0px)); }
+.hf-top img { width: min(190px, 42vw); }
+@media (max-width: 520px) { .hf-hero { padding-top: calc(78px + env(safe-area-inset-top, 0px)); } .hf-top img { width: min(150px, 38vw); } }
+
+/* The wings logo that appears in the header on scroll: a bit bigger (the logo is 1200 x 413) */
+.brand-mark { width: 120px; height: 41px; }
+@media (max-width: 520px) { .brand-mark { width: 70px; height: 24px; } }
