@@ -1160,3 +1160,16 @@ html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 1
   .reader-head-photo img { display: block; width: 100%; height: auto; }
   .reader-head-photo .meta { margin: 8px 0 0; }
 }
+
+/* Small icons beside the Instagram handle and the email (Find us and the footer) */
+.with-ico { display: inline-flex; align-items: center; gap: 0.5em; }
+.with-ico .ico { width: 1.1em; height: 1.1em; flex: none; }
+.footer-line .with-ico { gap: 0.4em; }
+
+/* Home, Share your work: three steps, with icons */
+.hf-steps { list-style: none; margin: var(--s-6) 0 var(--s-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 3vw, 40px); max-width: 860px; }
+.hf-steps li { display: grid; gap: var(--s-2); align-content: start; justify-items: start; color: #fff; font: 400 1rem/1.35 var(--type); }
+.hf-steps .ico { width: clamp(36px, 5.5vw, 60px); height: auto; aspect-ratio: 1; }
+.hf-step-no { font: 400 var(--t-label)/1 var(--type); letter-spacing: var(--track-caps, 0.12em); opacity: 0.75; }
+.hf-steps li:not(:first-child) { border-left: 1px solid rgba(255, 255, 255, 0.35); padding-left: clamp(12px, 2.4vw, 28px); }
+@media (max-width: 520px) { .hf-steps { gap: 10px; } .hf-steps li { font-size: var(--t-label); } .hf-steps li:not(:first-child) { padding-left: 10px; } }
