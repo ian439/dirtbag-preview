@@ -1151,3 +1151,12 @@ html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 1
 .hf-share .hf-break { border-top: 0; }
 .hf-sec { padding-top: clamp(28px, 4vw, 48px); }
 .hf-about { align-content: start; }
+
+/* Issue 01: the description sits beside a page from the Rag, so the right of the screen is not empty (not on phones) */
+.reader-head-photo { display: none; margin: 0; }
+@media (min-width: 900px) {
+  html[data-page="issue-01"] main > section.reader-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: clamp(24px, 4vw, 64px); align-items: end; }
+  .reader-head-photo { display: block; }
+  .reader-head-photo img { display: block; width: 100%; height: auto; }
+  .reader-head-photo .meta { margin: 8px 0 0; }
+}
