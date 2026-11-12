@@ -232,3 +232,22 @@
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
   items.forEach(function (el) { io.observe(el); });
 })();
+
+// YouTube videos load only when someone presses play, so nothing is sent to YouTube before that.
+// (The privacy-enhanced youtube-nocookie.com address is used, and the player starts right away.)
+(function () {
+  document.querySelectorAll('[data-yt]').forEach(function (box) {
+    var btn = box.querySelector('.watch-play');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var frame = document.createElement('iframe');
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(box.dataset.yt) + '?autoplay=1';
+      frame.title = box.dataset.title;
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      frame.allowFullscreen = true;
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      box.replaceChildren(frame);
+      frame.focus();
+    });
+  });
+})();
