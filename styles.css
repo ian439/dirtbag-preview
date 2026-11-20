@@ -22,7 +22,7 @@
   --display: "Archivo", "Arial Narrow", sans-serif;
   --body: "Archivo", system-ui, sans-serif;
   --type: "Courier Prime", "Courier New", monospace;  /* the typewriter text in the issue */
-  --spine-w: 10px;
+  --spine-w: 5px;
   --gutter: clamp(16px, 5vw, 56px);
 
   /* Type scale. Every size on the site is one of these, fluid from a 375px phone to a 1440px screen.
@@ -68,7 +68,7 @@ body {
 }
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; }
-:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--focus, var(--red)); outline-offset: 3px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth); line-height: 0.9; letter-spacing: -0.01em; text-transform: uppercase; text-wrap: balance; }
@@ -112,16 +112,14 @@ p { margin: 0; }
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gutter) 10px calc(var(--gutter) + var(--spine-w));
   background: var(--charcoal);
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.3s;
 }
-.site-header.is-scrolled { border-bottom-color: var(--line); }
 /* The header emblem waits until the cover's own emblem scrolls away. */
 .brand { display: flex; align-items: center; min-height: 44px; line-height: 0; opacity: 0; transition: opacity 0.3s; }
 .site-header.is-scrolled .brand { opacity: 1; }
+.is-home .site-header:not(.is-scrolled) .brand { pointer-events: none; }
 .brand-mark { display: block; width: 96px; height: 33px; }   /* the logo is 1200 × 413 */
-/* Each link is a small outlined button so it reads as something to tap. Shop is the filled red
-   button, like the rest of the site's buttons. The page you're on is outlined in red. */
+/* Each link is a small outlined button so it reads as something to tap. The shop is the one filled tab, like the
+   rest of the site's main buttons. The page you're on is bold with a bar under it (header A, Ian, Nov 17, 2026). */
 .site-nav { display: flex; align-items: center; gap: clamp(6px, 0.8vw, 10px); }
 .site-nav a {
   position: relative; display: inline-flex; align-items: center; min-height: 30px; padding: 0 9px;
@@ -131,11 +129,9 @@ p { margin: 0; }
 }
 /* Slim to look at, but the tap area still reaches 44px. */
 .site-nav a::after { content: ""; position: absolute; inset: -7px -3px; }
-.site-nav a:hover { border-color: var(--red); color: var(--red-text); }
-.site-nav a[aria-current="page"] { border-color: var(--red); color: var(--red-text); }
+.site-nav a:hover { border-color: currentColor; }
 .site-nav .nav-shop { border-color: var(--red); background: var(--red); color: #fff; }
 .site-nav .nav-shop:hover { background-color: var(--red); color: #fff; }
-.site-nav .nav-shop[aria-current="page"] { background: none; color: var(--red-text); }
 /* The same links, in the same order, on every screen. On a phone "Share your work" says "Share"
    (the full name stays for screen readers), and the emblem and buttons shrink so all four fit on one row. */
 .nav-short { display: none; }
@@ -146,6 +142,12 @@ p { margin: 0; }
   .brand-mark { width: 54px; height: 19px; }
   .site-nav { gap: 4px; }
   .site-nav a { padding: 0 6px; }
+}
+/* Small tablets (521 to 760px): the full row shows, so "Share your work" says "Share" here too, which keeps the
+   emblem and all four links (Be a Dirtbag is the longest) on one row. */
+@media (min-width: 521px) and (max-width: 760px) {
+  .nav-long { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .nav-short { display: inline; }
 }
 /* The smallest phones (iPhone SE): the emblem steps aside so the four links still fit. */
 @media (max-width: 359px) { .brand { display: none; } .site-header { justify-content: flex-end; } }
@@ -215,13 +217,12 @@ figcaption, .credit { margin-top: var(--s-2); font: 400 var(--t-small)/1.5 var(-
 .is-inner .brand { opacity: 1; }
 main > section > a.more, .more {
   display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; margin-top: var(--s-4);
-  font: 400 var(--t-small)/1 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; text-decoration: none; color: var(--red-text);
+  font: 400 var(--t-small)/1 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; text-decoration: underline; text-underline-offset: 4px; color: var(--paper);
 }
-.more:hover { color: var(--paper); }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3) var(--s-4); margin-top: var(--s-4); }
 .button {
   display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px;
-  background: var(--red); color: #fff; text-decoration: none;
+  border: 0; background: var(--red); color: #fff; text-decoration: none;
   font: 400 var(--t-small)/1 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase;
   transition: transform 0.2s, opacity 0.2s;
 }
@@ -229,8 +230,8 @@ main > section > a.more, .more {
 .button-off { opacity: 0.45; cursor: not-allowed; }
 .button-off:hover { transform: none; }
 .price { font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth); font-size: var(--t-statement); line-height: 0.9; }
-.tag { display: inline-block; padding: 2px 7px; border: 1px solid var(--line); font: 400 var(--t-label)/1.3 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--muted); }
-.tag-draft { border-style: dashed; border-color: var(--red); }
+.tag { display: inline-block; padding: 0; border: 0; font: 400 var(--t-label)/1.3 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--muted); }
+.tag-draft { text-decoration: underline dashed var(--red); text-underline-offset: 3px; }   /* preview only */
 .list-link { font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth); font-size: var(--t-h3); line-height: 1; text-transform: uppercase; }
 .list-link a { text-decoration: none; }
 .list-link a:hover { color: var(--red-text); }
@@ -348,8 +349,7 @@ main > section > a.more, .more {
   font-size: var(--t-h2); line-height: 0.95; text-transform: uppercase; text-align: center;
 }
 .poster a { text-decoration: none; transition: color 0.2s; }
-.poster li:nth-child(even) a { color: transparent; -webkit-text-stroke: 1.5px var(--paper); }
-.poster a:hover, .poster li:nth-child(even) a:hover { color: var(--red-text); -webkit-text-stroke: 0; }
+@media (hover: hover) { .poster a:hover { color: transparent; -webkit-text-stroke: 1.5px var(--paper); } }
 .lineup-poster .section-head { justify-items: center; text-align: center; }
 .lineup-poster > .more { display: flex; justify-content: center; }
 
@@ -361,6 +361,7 @@ main > section > a.more, .more {
 .toc a:hover { color: var(--red-text); }
 
 .stories, .more-stories, .shop-section, .shop-strip, .people, .lineup { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(72px, 10vw, 140px); }
+.shop-section { scroll-margin-top: calc(84px + env(safe-area-inset-top, 0px)); }
 /* Slim like the nav buttons; the tap area still reaches 44px. */
 .filters { display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-2); margin-bottom: var(--s-4); }
 .filter {
@@ -368,7 +369,7 @@ main > section > a.more, .more {
   font: 400 var(--t-label)/1 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase;
 }
 .filter::after { content: ""; position: absolute; inset: -7px -3px; }
-.filter:hover { border-color: var(--red); color: var(--red-text); }
+.filter:hover { border-color: var(--paper); }
 .filter[aria-pressed="true"] { background: var(--paper); color: var(--charcoal); border-color: var(--paper); }
 html:not(.js) .filters { display: none; }
 .stories > .meta { margin-bottom: var(--s-5); }
@@ -381,18 +382,14 @@ html:not(.js) .filters { display: none; }
   position: relative; display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: 4px 14px; align-items: baseline;
   padding: var(--s-4) 0; border-bottom: 1px solid var(--line); text-decoration: none;
 }
-.toc-no { font: 400 var(--t-small)/1 var(--type); color: var(--red-text); }
+.toc-no { font: 400 var(--t-small)/1 var(--type); color: var(--muted); }
 .toc-title {
   font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth);
   font-size: var(--t-statement); line-height: 0.9; text-transform: uppercase;
-  transition: opacity 0.3s; opacity: 0.72;
 }
 .toc-meta { grid-column: 2; display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
-.toc-row.is-active .toc-title { opacity: 1; }
-@media (hover: hover) {
-  .toc-row a:hover .toc-title { opacity: 1; }
-}
-html:not(.motion) .toc-title { opacity: 1; }
+.toc-row a::after { content: "\2192"; position: absolute; right: 2px; bottom: calc(var(--s-4) + 1px); font: 400 var(--t-body)/1 var(--type); color: var(--muted); transition: transform 0.2s, color 0.2s; }
+@media (hover: hover) { .toc-row a:hover::after { color: var(--red-text); transform: translateX(4px); } }
 
 /* ---------- Issue: the magazine reader ---------- */
 /* One page at a time, as big as the screen allows, in a row you swipe through (scroll-snap).
@@ -408,6 +405,8 @@ html:not(.motion) .toc-title { opacity: 1; }
   flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always;
   display: grid; gap: 16px; align-content: start;
 }
+/* Phones and small tablets: the next page peeks in at the edge, so it's plain that the row swipes. */
+@media (max-width: 760px) { .reader-track { gap: 14px; } .reader-page { flex-basis: 84%; } }
 .reader-fig { margin: 0; }
 .reader-fig img { display: block; width: 100%; box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45); }
 .reader-info { display: grid; gap: var(--s-3); align-content: start; justify-items: start; }
@@ -417,39 +416,37 @@ html:not(.motion) .toc-title { opacity: 1; }
 .reader-story a { text-decoration: none; }
 .reader-story a:hover { color: var(--red-text); }
 @media (min-width: 761px) {
-  .reader-page { grid-template-columns: auto minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: end; }
-  .reader-fig img { width: auto; max-width: 100%; height: calc(100svh - 190px); min-height: 420px; }
-  .reader-type { width: auto; height: calc(100svh - 190px); min-height: 420px; }
+  /* The page on the left; on the right, its arrows at the top and its words at the foot. */
+  .reader-page { grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); }
+  .reader-fig { grid-row: 1 / span 2; align-self: end; }
+  .reader-page .reader-controls { grid-column: 2; grid-row: 1; align-self: start; }
+  .reader-info { grid-column: 2; grid-row: 2; align-self: end; }
+  /* Sized by its own shape, never stretched: a tall page fills the height left between the header and the buy bar
+     (--dock-h, order.js), a wide photo stops at 58vw so the words beside it keep their column. */
+  .reader-fig img { width: auto; height: auto; max-width: min(58vw, 812px); max-height: max(380px, calc(100svh - 130px - var(--dock-h, 0px))); }
+  .reader-type { width: auto; height: max(380px, calc(100svh - 130px - var(--dock-h, 0px))); }
 }
-/* The controls stay quiet: two bare arrows and a count, and a thin line of segments, one per page,
-   that you can tap to jump. The page you're on is the red segment. Tapping the page itself turns it. */
-.reader-controls { display: flex; align-items: center; gap: var(--s-3); margin-top: var(--s-4); }
+/* Each page's own arrows and count, right under it (Ian, Nov 17, 2026). Only the page you're on shows them, so the
+   next page peeks in clean, and the hidden ones are out of the tab order. Tapping the page itself opens its story. */
+.reader-controls { display: flex; align-items: center; gap: var(--s-3); transition: opacity 0.3s ease, visibility 0.3s; }
+.js .reader-page:not(.is-current) .reader-controls { opacity: 0; visibility: hidden; }
 .reader-btn {
   position: relative; display: inline-grid; place-items: center; width: 52px; height: 52px; padding: 0;
   border: 1.5px solid var(--paper); border-radius: 50%; background: none; color: var(--paper); cursor: pointer;
   font: 400 1.5rem/1 var(--type); isolation: isolate; transition: color 0.2s, border-color 0.2s, transform 0.2s;
 }
-/* Round, full-strength arrows that read as buttons at a glance; red fill on hover and focus. */
-.reader-btn::before { content: ""; position: absolute; inset: -1.5px; z-index: -1; border-radius: 50%; background: var(--red); transform: scale(0); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
-.reader-btn:hover, .reader-btn:focus-visible { border-color: var(--red); color: #fff; }
-.reader-btn:hover::before, .reader-btn:focus-visible::before { transform: scale(1); }
+/* Round, full-strength arrows that read as buttons at a glance; they grow a touch on hover (no red fill: red is for
+   actions). */
+@media (hover: hover) { .reader-btn:not([aria-disabled="true"]):hover { transform: scale(1.06); } }
 .reader-btn:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .reader-count { font: 400 var(--t-small)/1 var(--type); letter-spacing: var(--track-caps); color: var(--paper); min-width: 5em; text-align: center; }
-.reader-jump { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; max-width: 560px; }
-.reader-dot { position: relative; display: block; height: 24px; }
-.reader-dot::before {
-  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
-  background: rgba(241, 238, 232, 0.22); transition: background-color 0.25s, transform 0.25s;
-}
-.reader-dot:hover::before { background: rgba(241, 238, 232, 0.6); }
-.reader-dot[aria-current="page"]::before { background: var(--red); transform: scaleY(2); }
 /* A story with no photo yet opens like a printed type page: its number outlined in red, its title set
    big at the foot. Same shape and size as a page photo, so every turn of the reader feels the same. */
 .reader-fig > a:not(.reader-type) { display: block; }
 .reader-info .toc-meta { grid-column: auto; }
 .reader-type {
-  display: grid; align-content: space-between; aspect-ratio: 943 / 1400; width: 100%; padding: clamp(18px, 4%, 36px);
-  background: var(--ink); border: 1px solid var(--line); text-decoration: none; container-type: inline-size;
+  display: grid; align-content: space-between; aspect-ratio: 911 / 1368; width: 100%; padding: clamp(18px, 4%, 36px);
+  background: var(--ink); text-decoration: none; container-type: inline-size;
 }
 .reader-type-no {
   font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth); font-size: 38cqi; line-height: 0.8;
@@ -457,13 +454,15 @@ html:not(.motion) .toc-title { opacity: 1; }
 }
 .reader-type-title { font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth); font-size: 15cqi; line-height: 0.9; text-transform: uppercase; color: var(--paper); text-wrap: balance; }
 .reader-dek { font: 400 var(--t-body)/1.6 var(--type); color: #d8d3cc; max-width: 46ch; }
-.reader-more { margin-top: var(--s-4); }
-.reader-more a { color: var(--paper); }
+/* Experience the Rag: the way to order it from the issue page (Ian, Nov 15). Ian's words, in the headline type,
+   on the spine's darker red. Quieter than the other red buttons: no glint, no flow, just the brighter red on hover.
+   Lands on the order form. (The :root prefix outranks the shimmer rules for filled buttons further down.) */
+.reader-buy { margin-top: var(--s-5); }
 
 /* ---------- Story ---------- */
 .story { padding-bottom: var(--s-8); }
 .story-body, .story-type { max-width: 900px; margin: 0 auto; padding-inline: calc(var(--gutter) + var(--spine-w)) var(--gutter); }
-.story .eyebrow a { text-decoration: none; color: var(--red-text); }
+.story .eyebrow a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .story .meta a { color: var(--paper); }
 
 /* With a photo: the whole page, uncropped and square, with the title under it. On wide screens
@@ -471,7 +470,7 @@ html:not(.motion) .toc-title { opacity: 1; }
 .story-hero { display: grid; margin-bottom: var(--s-7); }
 .story-hero-photo { padding-left: var(--spine-w); }
 .story-hero-photo img { width: 100%; }
-.story-hero-text { display: grid; gap: var(--s-3); padding: var(--s-5) var(--gutter) 0 calc(var(--gutter) + var(--spine-w)); }
+.story-hero-text { display: grid; container-type: inline-size; gap: var(--s-3); padding: var(--s-5) var(--gutter) 0 calc(var(--gutter) + var(--spine-w)); }
 .story-hero-credit { font: 400 var(--t-small)/1.5 var(--type); color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 8px; }
 @media (min-width: 900px) {
   .story-hero { grid-template-columns: auto minmax(0, 1fr); align-items: end; }
@@ -482,10 +481,10 @@ html:not(.motion) .toc-title { opacity: 1; }
 
 /* Without a photo: the opening is type. The title huge, the page number (or contents number)
    outlined in red behind it, like a folio. */
-.story-type { position: relative; display: grid; gap: var(--s-3); align-content: end; min-height: 62svh; padding-top: clamp(40px, 8vw, 96px); padding-bottom: clamp(32px, 6vw, 72px); margin-bottom: clamp(24px, 4vw, 48px); border-bottom: 1px solid var(--line); }
+.story-type { position: relative; display: grid; gap: var(--s-3); align-content: end; min-height: 62svh; padding-top: clamp(40px, 8vw, 96px); padding-bottom: clamp(32px, 6vw, 72px); margin-bottom: clamp(24px, 4vw, 48px); }
 .story-type h1 { position: relative; }
 .story-folio {
-  position: absolute; top: clamp(8px, 3vw, 40px); right: var(--gutter);
+  position: absolute; top: max(clamp(8px, 3vw, 40px), calc(var(--t-label) * 1.3 + var(--s-3))); right: var(--gutter);
   font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth);
   font-size: var(--t-display); line-height: 0.8; text-transform: uppercase;
   color: transparent; -webkit-text-stroke: 2px var(--red); opacity: 0.85;
@@ -496,7 +495,15 @@ html:not(.motion) .toc-title { opacity: 1; }
 .pull p { font-family: var(--display); font-weight: 800; font-variation-settings: var(--wdth); font-size: var(--t-statement); line-height: 0.95; text-transform: uppercase; color: var(--paper); }
 .pull { margin: 0.5em 0; }
 .q { color: var(--red-text); }
-.read-rest { margin-top: var(--s-6); padding-top: var(--s-6); border-top: 1px solid var(--line); }
+.read-rest { margin-top: var(--s-7); }
+/* A story's photo set: every photo whole and square, in columns of its own (one on a phone, two, then three).
+   Columns let tall and wide photos sit together without cropping either. No words go on or between them. */
+.story-photos { max-width: 1400px; margin: var(--s-7) auto 0; padding-inline: calc(var(--gutter) + var(--spine-w)) var(--gutter); }
+.story-photos ul { list-style: none; margin: 0; padding: 0; columns: 1; column-gap: var(--s-2); }
+.story-photos li { break-inside: avoid; margin: 0 0 var(--s-2); }
+.story-photos img { width: 100%; }
+@media (min-width: 600px) { .story-photos ul { columns: 2; } }
+@media (min-width: 1100px) { .story-photos ul { columns: 3; } }
 
 /* ---------- Artists ---------- */
 .person-head { position: relative; display: grid; gap: var(--s-3); min-height: 56svh; align-content: end; }
@@ -517,10 +524,11 @@ html:not(.motion) .toc-title { opacity: 1; }
 @media (max-width: 899px) { .person-head.has-photo .person-photo { order: -1; } }
 /* Instagram: the @handle, then a small square Instagram button. The whole row is one link. */
 .ig-row { display: inline-flex; align-items: center; gap: var(--s-3); min-height: 44px; text-decoration: none; font: 400 var(--t-body)/1 var(--type); color: var(--paper); }
-.ig-button { position: relative; display: inline-grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(241, 238, 232, 0.3); isolation: isolate; }
+.ig-button { position: relative; display: inline-grid; place-items: center; width: 34px; height: 34px; border: 1px solid color-mix(in srgb, currentColor 45%, transparent); isolation: isolate; }
 .ig-button svg { width: 18px; height: 18px; }
 .ig-row:hover { color: var(--red-text); }
-.ig-row:hover .ig-button { border-color: var(--red); }
+:is(html[data-page="artists"], html[data-page="artist"]) .ig-row:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ig-row:hover .ig-button { border-color: currentColor; }
 .person-words .pull { margin: 0 0 var(--s-6); max-width: var(--measure); }
 .person-words .pull footer { margin-top: var(--s-2); text-transform: none; }
 .person-words .pull p { font: 400 var(--t-lead)/1.4 var(--type); text-transform: none; letter-spacing: 0; }
@@ -616,29 +624,29 @@ legend .contact-hint { margin-left: 0.5em; }
 .contact-form :is(input, textarea):focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(212, 42, 48, 0.25); }
 .contact-form :is(input, textarea):focus-visible { outline: none; }
 
-/* Dropdowns: the same square box, with our own arrow (the browser's looks different everywhere). */
-.contact-form select {
-  display: block; width: 100%; margin: 0; padding: 14px 44px 14px 16px; border: 1px solid var(--line); border-radius: 0;
-  background: var(--ink); color: var(--paper); font: 400 1rem/1.5 var(--body); cursor: pointer;
-  -webkit-appearance: none; appearance: none; transition: border-color 0.2s;
+/* Your art: the names offered under the box as they type (contact.js). The list sits over the boxes
+   below it while it's open, never over a photo: the form has none. Square, the same edge as the boxes;
+   the highlighted name is red. */
+.suggest {
+  position: absolute; left: 0; right: 0; top: calc(100% + 5px); z-index: 5; margin: 0; padding: 0; list-style: none;
+  border: 1px solid var(--line); background: var(--ink); color: var(--paper); font: 400 1rem/1.5 var(--body);
 }
-.contact-form select:invalid, .contact-form select:has(option[value=""]:checked) { color: var(--muted); }
-.contact-form option { color: var(--charcoal); background: var(--paper); }
-@media (hover: hover) { .contact-form select:hover { border-color: rgba(241, 238, 232, 0.5); } }
-.contact-form select:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(212, 42, 48, 0.25); }
-.select-arrow { position: absolute; right: 16px; top: 50%; width: 16px; height: 16px; margin-top: -8px; color: var(--muted); pointer-events: none; }
-.box-select:focus-within .select-arrow { color: var(--red-text); }
+.suggest-item { display: flex; align-items: center; min-height: 44px; padding: 8px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.suggest-item + .suggest-item { border-top: 1px solid var(--line); }
+.suggest-item.is-active, .suggest-item:active { background: var(--red); color: #fff; }
+.motion .suggest { animation: suggest-in 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes suggest-in { from { opacity: 0; transform: translateY(-6px); } }
 
 .contact-send { justify-self: start; position: relative; }
 .contact-send .button span[aria-hidden] { margin-left: 10px; display: inline-block; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
 @media (hover: hover) { .motion .contact-send .button:hover span[aria-hidden] { transform: translateX(5px); } }
 .contact-form.is-sending .button { opacity: 0.6; cursor: progress; }
 .contact-error { padding: 14px 16px; border: 1px solid var(--red); background: rgba(212, 42, 48, 0.12); font: 400 var(--t-small)/1.5 var(--type); }
-.contact-error a { color: #fff; overflow-wrap: anywhere; }
+.contact-error a { color: inherit; text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
 .contact-trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
 /* Sent: takes the form's place. */
-.contact-sent { position: relative; display: grid; gap: var(--s-3); align-content: start; padding: clamp(28px, 5vw, 48px); border: 1px solid var(--line); outline: none; }
+.contact-sent { position: relative; display: grid; gap: var(--s-3); align-content: start; padding: clamp(28px, 5vw, 48px) 0; outline: none; }
 .contact-sent h3 { font-size: var(--t-h2); line-height: 0.9; color: var(--red); }
 .contact-sent p { font: 400 var(--t-body)/1.6 var(--type); }
 
@@ -646,29 +654,189 @@ legend .contact-hint { margin-left: 0.5em; }
    with a soft glow.
    Like the contact form on ianmalone.com. Without motion it's a still red edge. */
 @property --orbit { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-.is-guide::before, .contact-send::before {
+.is-guide::before {
   content: ""; position: absolute; inset: 0; z-index: 1; padding: 1.5px; pointer-events: none;
   background: rgba(212, 42, 48, 0.7);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
 }
-.motion .is-guide::before, .motion .contact-send::before {
+.motion .is-guide::before {
   background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(212, 42, 48, 0.5) 290deg, #ff6b3d 340deg, #ffc49a 355deg, transparent 360deg);
   animation: orbit 3.6s linear infinite;
 }
-.motion .is-guide::after, .motion .contact-send::after {
+.motion .is-guide::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   box-shadow: 0 0 22px -4px rgba(212, 42, 48, 0.6); animation: guide-breathe 3.6s ease-in-out infinite;
 }
-/* Send always has its comet, whatever box the guide is on. Send is solid red, so a red comet on its edge
-   disappears: on Send it runs in paper white instead, still right on the edge. Literal colours, since
-   pages remap --paper (on Share it's near black). */
-.contact-form .contact-send::before { padding: 2px; background: rgba(241, 238, 232, 0.85); }
-.motion .contact-form .contact-send::before {
-  background: conic-gradient(from var(--orbit), transparent 0deg 200deg, rgba(241, 238, 232, 0.35) 290deg, #f1eee8 340deg, #fff 355deg, transparent 360deg);
-}
 @keyframes orbit { to { --orbit: 360deg; } }
 @keyframes guide-breathe { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+
+/* ---------- Buying the Rag: layout B (Ian, Nov 17, 2026; refs/shop-versions/b.html) ----------
+   On the Issue 01 page (Ian, Nov 17: preview and buy the magazine there; Be a Dirtbag is the shop for everything
+   else). The magazine's pages follow the stories, and a bar pinned to the bottom holds the buy box (build.mjs:
+   shopDock, orderForm; order.js). On a computer the whole buy box sits in the bar on one line. On a phone the bar shows the
+   price and Get the Rag, which opens the box over a dark layer. Continue swaps the rest of the page for Stripe's
+   checkout (.order-checkout). The bar is chrome, like the header: the pages scroll under it, and it is one solid
+   colour, the page's own, since iPhone Safari tints its toolbar from the bottom edge. */
+.order-thanks [hidden], .shop-dock [hidden], .order-checkout[hidden] { display: none !important; }
+.issue-pages { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(72px, 10vw, 140px); }
+.shop-pages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5) 12px; }
+@media (min-width: 1000px) { .shop-pages { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-6) 16px; } }
+.shop-page { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.shop-page img { display: block; width: 100%; height: auto; background: var(--ink); }
+.shop-page-cap { margin: 0; display: flex; flex-wrap: wrap; gap: 2px 10px; font: 400 var(--t-label)/1.4 var(--type); color: var(--muted); }
+
+/* Room at the bottom of the page for the bar (order.js measures it as --dock-h). */
+.has-dock { padding-bottom: var(--dock-h, 76px); }
+@media (min-width: 1200px) { .has-dock { padding-bottom: var(--dock-h, 132px); } }
+.has-dock:has(main.is-checkout) { padding-bottom: 0; }
+main.is-checkout > :not(.order-checkout) { display: none !important; }
+
+/* Under the header (z-index 20), so the header's menu always opens over it. */
+.shop-dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 19; overflow: clip; background: var(--charcoal); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.shop-dock-peek { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 76px; padding: 10px var(--gutter) 10px calc(var(--gutter) + var(--spine-w)); }
+.shop-dock-price { margin: 0; display: flex; align-items: baseline; gap: 8px; font: 400 var(--t-small)/1 var(--type); color: var(--muted); }
+.shop-dock-price strong { font: 800 var(--t-h3)/1 var(--display); font-variation-settings: var(--wdth); color: var(--paper); }
+.shop-dock-open { min-height: 52px; }
+.shop-dock-panel { display: none; max-height: calc(100svh - 150px); overflow-y: auto; overscroll-behavior: contain; padding: var(--s-4) var(--gutter) var(--s-5) calc(var(--gutter) + var(--spine-w)); }
+.shop-dock.is-open .shop-dock-panel { display: block; }
+.shop-dock.is-open .shop-dock-peek { display: none; }
+.motion .shop-dock.is-open .shop-dock-panel { animation: dock-rise 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes dock-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.shop-dock-top { position: sticky; top: calc(var(--s-4) * -1); z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin: calc(var(--s-4) * -1) 0 var(--s-3); padding-block: var(--s-4) var(--s-2); background: var(--charcoal); }
+.shop-dock-close { flex: none; width: 44px; height: 44px; border: 1px solid var(--line); background: var(--ink); color: var(--paper); font: 400 1.5rem/1 var(--type); cursor: pointer; }
+.shop-scrim { position: fixed; inset: 0; z-index: 18; background: rgba(10, 4, 5, 0.94); }
+
+/* The buy box. */
+.order-form { display: grid; gap: var(--s-5); max-width: 560px; }
+.order-form fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.buy-label { margin: 0 0 var(--s-2); padding: 0; font: 800 var(--t-body)/1.1 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; letter-spacing: 0.02em; }
+.buy-hint { font: 400 var(--t-small)/1 var(--type); text-transform: none; letter-spacing: 0; color: var(--muted); }
+.order-form .pay { gap: 4px; }
+.order-form .pay-amount { font-size: clamp(2.25rem, 1.8rem + 2vw, 3.25rem); }
+/* Mail or pickup: one two-way switch, the chosen side filled paper-white. */
+.buy-switch { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); background: var(--ink); }
+.buy-switch label { position: relative; display: grid; cursor: pointer; }
+.buy-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.buy-switch span { display: grid; place-items: center; min-height: 52px; padding: 8px 10px; text-align: center; font: 800 var(--t-small)/1.15 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; letter-spacing: 0.04em; transition: background-color 0.2s, color 0.2s; }
+.buy-switch label + label span { border-left: 1px solid var(--line); }
+.buy-switch input:checked + span { background: var(--paper); color: var(--ink); }
+.buy-switch input:focus-visible + span { outline: 2px solid var(--red); outline-offset: -4px; }
+@media (hover: hover) { .buy-switch input:not(:checked):hover + span { color: var(--red-text); } }
+.buy-note { margin: var(--s-2) 0 0; font: 400 var(--t-small)/1.5 var(--type); color: var(--muted); }
+/* How many and the total, on one line. */
+.buy-row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--s-3) var(--s-5); }
+.buy-go { width: 100%; gap: 0.5em; min-height: 58px; }
+.buy-sale { margin: 0; }
+
+/* How many: minus, the number, plus, as one square box. */
+.qty { display: inline-grid; grid-template-columns: 44px 56px 44px; height: 48px; justify-self: start; border: 1px solid var(--line); background: var(--ink); }
+.qty-btn { border: 0; background: none; color: var(--paper); font: 400 var(--t-h3)/1 var(--type); cursor: pointer; }
+@media (hover: hover) { .qty-btn:hover { color: var(--red-text); } }
+.order-form .qty-input { width: 100%; height: 100%; margin: 0; padding: 0; border: solid var(--line); border-width: 0 1px; border-radius: 0; background: none; color: var(--paper); text-align: center; font: 800 var(--t-h3)/1 var(--display); font-variation-settings: var(--wdth); }
+.order-form .qty-input:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+
+/* What you pay per copy: one slider across the sliding scale (Ian, Nov 16). The amount sits big above it, the
+   line fills red up to the square handle, and the two ends are labelled. The input is 44px tall so the handle
+   is easy to grab on a phone, and a sideways drag moves the handle, not the page. --frac (0 to 1, set by
+   build.mjs and order.js) is how far along the handle is. */
+.pay { --thumb: 28px; --at: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--frac, 0)); display: grid; gap: var(--s-2); }
+.pay-amount { justify-self: start; transform-origin: left bottom; font: 800 var(--t-statement)/0.9 var(--display); font-variation-settings: var(--wdth); color: var(--paper); }
+/* The slider's heat (Ian, Nov 16: more alive and glowy, not loud). It all grows with the price:
+   - the line runs from the spine's dark red at $15 to the emblem's bright red at the handle;
+   - a soft red light sits behind the filled line and behind the handle, small and dim at $15, bigger and
+     brighter at $30, breathing like the glow behind Mail and Pickup;
+   - the handle and its light swell a little while you hold it, and the amount ticks as it changes.
+   Transform and opacity only. Without motion everything holds still. */
+.pay-track { position: relative; isolation: isolate; }
+.pay-track::before {
+  content: ""; position: absolute; left: 0; top: 50%; z-index: -1; width: var(--at); height: 6px; margin-top: -3px; pointer-events: none;
+  background: linear-gradient(to right, transparent, var(--red)); filter: blur(7px); opacity: calc(0.3 + 0.5 * var(--frac, 0));
+}
+/* .pay-glow is a window a little bigger than the slider that the light can't leave, with soft sides, so at $30
+   the light never pushes the page wider than the screen. The light itself is the <i> inside. */
+.pay-glow {
+  --pad: 20px; position: absolute; inset: -44px calc(var(--pad) * -1); z-index: -1; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--pad), #000 calc(100% - var(--pad)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--pad), #000 calc(100% - var(--pad)), transparent);
+}
+.pay-glow i {
+  position: absolute; left: calc(var(--pad) + var(--thumb) / 2 + (100% - var(--pad) * 2 - var(--thumb)) * var(--frac, 0)); top: 50%;
+  width: 104px; height: 104px; margin: -52px 0 0 -52px;
+  background: radial-gradient(closest-side, rgba(212, 42, 48, calc(0.36 + 0.34 * var(--frac, 0))), transparent);
+  transform: scale(calc(0.75 + 0.45 * var(--frac, 0))); transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pay-track:active .pay-glow i { transform: scale(calc(1 + 0.45 * var(--frac, 0))); }
+.motion .pay-glow i { animation: guide-breathe 3.6s ease-in-out infinite; }
+.motion .pay-amount.is-tick { animation: pay-tick 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes pay-tick { from { transform: scale(1.09); } to { transform: none; } }
+.order-form .pay-range {
+  --track: linear-gradient(to right, var(--spine, #991e21), var(--red) var(--at), rgba(241, 238, 232, 0.3) 0);
+  position: relative; display: block; width: 100%; height: 44px; margin: 0; padding: 0; border: 0; background: none; cursor: pointer; touch-action: pan-y;
+  -webkit-appearance: none; appearance: none;
+}
+.order-form .pay-range:focus { box-shadow: none; }
+.pay-range::-webkit-slider-runnable-track { height: 4px; background: var(--track); }
+.pay-range::-moz-range-track { height: 4px; background: var(--track); }
+.pay-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: var(--thumb); height: var(--thumb); margin-top: -12px; border: 0; border-radius: 0; background: var(--red); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+.pay-range::-moz-range-thumb { width: var(--thumb); height: var(--thumb); border: 0; border-radius: 0; background: var(--red); transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+.pay-range:active::-webkit-slider-thumb { transform: scale(1.14); }
+.pay-range:active::-moz-range-thumb { transform: scale(1.14); }
+@media (hover: hover) { .pay-range:hover::-webkit-slider-thumb { transform: scale(1.07); } .pay-range:hover:active::-webkit-slider-thumb { transform: scale(1.14); } }
+.order-form .pay-range:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+.order-form .pay-range.is-cued:focus { outline: 2px solid var(--red); outline-offset: 3px; }
+.shop-dock::after { content: ""; position: absolute; inset: 0; border-top: 3px solid var(--red); background: rgba(212, 42, 48, 0.12); opacity: 0; pointer-events: none; }
+.shop-dock.is-cued::after { opacity: 1; }
+.motion .shop-dock.is-cued::after { animation: dock-cue 1.6s ease-out forwards; }
+@keyframes dock-cue { 0% { opacity: 0; } 18% { opacity: 1; } 55% { opacity: 1; } 100% { opacity: 0; } }
+.pay-ends { display: flex; justify-content: space-between; font: 400 var(--t-small)/1 var(--type); color: var(--muted); }
+
+/* The running total. */
+.order-total { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; font: 400 var(--t-small)/1.4 var(--type); color: var(--muted); }
+.order-amount { font: 800 var(--t-h3)/1 var(--display); font-variation-settings: var(--wdth); color: var(--paper); }
+.order-amount:empty { display: none; }
+.order-form .button:disabled { opacity: 0.6; cursor: progress; }
+
+/* Computer: the whole buy box lives in the bar, on one line. Nothing opens, no dark layer. From 1200px: below
+   that the line doesn't fit (Continue ran off the edge at 1024), so tablets and small laptops get the phone bar. */
+@media (min-width: 1200px) {
+  .shop-dock-peek, .shop-dock-top, .shop-scrim { display: none !important; }
+  .shop-dock:not(.is-sheet) .shop-dock-panel { display: block; max-height: none; overflow: visible; padding: 14px var(--gutter) 12px calc(var(--gutter) + var(--spine-w)); }
+  .shop-dock:not(.is-sheet) .order-form { max-width: 1400px; margin: 0 auto; grid-template-columns: minmax(170px, 1.3fr) minmax(230px, 1.2fr) auto auto; grid-template-areas: "price method row go" "price method row sale" "error error error error"; align-items: center; gap: 6px 20px; }
+  .shop-dock:not(.is-sheet) .buy-price { grid-area: price; }
+  .shop-dock:not(.is-sheet) .buy-method { grid-area: method; }
+  .shop-dock:not(.is-sheet) .buy-row { grid-area: row; flex-wrap: nowrap; align-items: center; }
+  .shop-dock:not(.is-sheet) .buy-go { grid-area: go; width: auto; padding-inline: 22px; white-space: nowrap; }
+  .shop-dock:not(.is-sheet) .buy-sale { grid-area: sale; font-size: var(--t-label); }
+  .shop-dock:not(.is-sheet) .contact-error { grid-area: error; }
+  .shop-dock:not(.is-sheet) .buy-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .shop-dock:not(.is-sheet) .pay { grid-template-columns: auto 1fr; grid-template-areas: "amount track" "amount ends"; align-items: center; column-gap: 16px; row-gap: 0; }
+  .shop-dock:not(.is-sheet) .pay-amount { grid-area: amount; font-size: 2.25rem; }
+  .shop-dock:not(.is-sheet) .pay-track { grid-area: track; }
+  .shop-dock:not(.is-sheet) .pay-ends { grid-area: ends; font-size: var(--t-label); }
+  .shop-dock:not(.is-sheet) .buy-switch span { min-height: 44px; }
+  .shop-dock:not(.is-sheet) .buy-note { margin-top: 4px; font-size: var(--t-label); }
+  .shop-dock:not(.is-sheet) .order-total { flex-direction: column; gap: 2px; align-items: flex-end; text-align: right; }
+}
+
+/* Stripe's checkout, in place of the form. */
+.order-checkout { display: grid; gap: var(--s-4); max-width: 760px; margin: 0 auto; padding-top: var(--s-5); padding-bottom: var(--s-8); scroll-margin-top: 96px; outline: none; }
+.order-recap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); padding-bottom: var(--s-3); border-bottom: 1px solid var(--line); }
+.order-recap-line { font: 400 var(--t-body)/1.4 var(--type); }
+.order-back { position: relative; display: inline-flex; align-items: center; gap: var(--s-2); min-height: 44px; padding: 0 16px; cursor: pointer; font: 400 var(--t-small)/1 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; }
+.order-panel { position: relative; }
+.order-stripe { min-height: 420px; padding: clamp(16px, 3vw, 28px); background: var(--charcoal); color: var(--paper); }
+/* Stripe's form fades in once it has drawn itself (order.js, whenReady). */
+.order-stripe > * { transition: opacity 0.45s cubic-bezier(0, 0, 0.2, 1); }
+.order-panel.is-loading .order-stripe > * { opacity: 0; }
+
+.order-soldout { font: 400 var(--t-lead)/1.4 var(--type); }
+
+/* Thank you. */
+.order-thanks { display: grid; gap: var(--s-5); }
+.order-thanks .section-head { margin-bottom: 0; }
+.order-next { display: grid; gap: var(--s-4); justify-items: start; max-width: var(--measure); }
+.order-next .more { margin-top: 0; }
 
 /* ---------- Footer ---------- */
 .footer-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-1) var(--s-5); margin-bottom: var(--s-2); }
@@ -694,18 +862,20 @@ legend .contact-hint { margin-left: 0.5em; }
   color: rgba(241, 238, 232, 0.7);
 }
 .footer-sig {
-  position: relative; display: inline-flex; align-items: center; padding-bottom: 0.3rem;
+  position: relative; display: inline-flex; align-items: center;
   color: rgba(241, 238, 232, 0.9); text-decoration: none; transition: color 0.2s;
 }
 .footer-sig-mark { display: block; flex: none; width: 8.16rem; height: 1.35rem; fill: currentColor; }  /* 5169 × 855 */
 .footer-sig:hover, .footer-sig:focus-visible { color: #fff; }
-.footer-name { white-space: nowrap; letter-spacing: var(--track-caps); color: rgba(241, 238, 232, 0.9); padding-bottom: 0.3rem; }
-.footer-sig::after {
-  content: ""; position: absolute; left: 8%; right: 8%; bottom: 0;
-  height: 1px; background: currentColor; opacity: 0.45;
-  transition: left 0.25s, right 0.25s, opacity 0.25s;
+.footer-pair { display: inline-flex; align-items: center; gap: 0.6rem; }
+.footer-and { white-space: nowrap; letter-spacing: var(--track-caps); color: rgba(241, 238, 232, 0.7); }
+/* Jameson's handwritten signature (a PNG), used as a mask so it takes the link color like Ian's SVG. 1890 x 699 */
+.footer-sig-mark2 {
+  display: block; flex: none; width: 6.5rem; height: 2.4rem; background: currentColor;
+  -webkit-mask: url("images/signature-jameson.png") center / contain no-repeat;
+  mask: url("images/signature-jameson.png") center / contain no-repeat;
 }
-.footer-sig:hover::after, .footer-sig:focus-visible::after { left: 0; right: 0; opacity: 0.9; }
+.footer-name { white-space: nowrap; letter-spacing: var(--track-caps); color: rgba(241, 238, 232, 0.9); padding-bottom: 0.3rem; }
 
 /* ---------- Scroll reveal: transform and opacity only ---------- */
 .js .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -718,18 +888,9 @@ legend .contact-hint { margin-left: 0.5em; }
 
 /* Outlined buttons fill with red ink from the left on hover, like a squeegee pass. */
 .site-nav a, .filter, .button-line { isolation: isolate; }
-.motion .ig-button::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--red); transform: scaleX(0); transform-origin: left center; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
-@media (hover: hover) { .motion .ig-row:hover .ig-button { color: #fff; } .motion .ig-row:hover .ig-button::before { transform: scaleX(1); } }
 .button-line { position: relative; }
-.motion :is(.site-nav a, .filter, .button-line)::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; background: var(--red);
-  transform: scaleX(0); transform-origin: left center; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
 .motion :is(.site-nav a, .filter, .button) { transition: transform 0.15s ease, color 0.2s, border-color 0.2s, background-color 0.2s; }
-@media (hover: hover) {
-  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):hover { color: #fff; border-color: var(--red); background: none; }
-  .motion :is(.site-nav a:not(.nav-shop), .site-nav .nav-shop[aria-current], .filter:not([aria-pressed="true"]), .button-line):hover::before { transform: scaleX(1); }
-}
+@media (hover: hover) { :is(.filter:not([aria-pressed="true"]), .button-line):hover { border-color: var(--paper); } }
 
 /* Filled red buttons: on hover a hotter red flows through them, left to right, over and over. */
 .motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])) {
@@ -806,12 +967,6 @@ a, button { -webkit-tap-highlight-color: transparent; }
   :is(.button:not(.button-off), .site-nav a, .filter, .reader-btn, .ig-row .ig-button):active { transform: scale(0.96); }
   .more:active span[aria-hidden] { transform: translateX(5px); }
 
-  .motion :is(.site-nav a:not(.nav-shop):not([aria-current]), .filter:not([aria-pressed="true"]), .button-line).is-shown { animation: ink-text 1.5s ease; }
-  .motion :is(.site-nav a:not(.nav-shop):not([aria-current]), .filter:not([aria-pressed="true"]), .button-line).is-shown::before { animation: ink-pass 1.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
-  .motion .ig-row.is-shown .ig-button { animation: ink-text 1.5s ease; }
-  .motion .ig-row.is-shown .ig-button::before { animation: ink-pass 1.5s cubic-bezier(0.65, 0, 0.35, 1) both; }
-  .motion .reader-btn.is-shown::before { animation: ring-pass 1.4s cubic-bezier(0.65, 0, 0.35, 1) both; }
-  .motion .reader-btn.is-shown { animation: ink-text 1.4s ease; }
   .motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])).is-shown { animation: flow 1.2s linear 2, glint 5s ease-in-out 4s infinite; }
   .motion .more.is-shown span[aria-hidden] { animation: nudge 1.2s ease-in-out 2; }
 }
@@ -836,26 +991,29 @@ a, button { -webkit-tap-highlight-color: transparent; }
    Each page has a ground of its own, from the same palette (charcoal, red, paper), by remapping the colour
    variables. build.mjs puts data-page on <html>. */
 html[data-page="issue-01"], html[data-page="story"] { --charcoal: #0e0d0e; }                                                  /* ink black */
-html[data-page="artists"], html[data-page="artist"] { --red-text: #fff; --charcoal: #991e21; --paper: #fff; --muted: #f3d3d4; --line: rgba(255, 255, 255, 0.35); --red: #1a1819; }  /* spine red */
+html[data-page="artists"], html[data-page="artist"] { --focus: #fff; --red-text: #fff; --charcoal: #991e21; --paper: #fff; --muted: #f3d3d4; --line: rgba(255, 255, 255, 0.35); --red: #1a1819; }  /* spine red */
 html[data-page="share"] { --red-text: #b01f25; --charcoal: #f1eee8; --paper: #121112; --muted: #5b5557; --line: rgba(18, 17, 18, 0.18); } /* paper */
-html[data-page="support"], html[data-page="marketplace"] { --charcoal: #2b1112; --muted: #cfaeaf; --line: rgba(241, 238, 232, 0.2); }                          /* oxblood */
+html[data-page="shop"], html[data-page="marketplace"] { --charcoal: #2b1112; --muted: #cfaeaf; --line: rgba(241, 238, 232, 0.2); }                          /* oxblood */
 html[data-page], html[data-page] body { background: var(--charcoal); color: var(--paper); }
 html[data-page] :is(.cover-kicker, .intro-body, .reader-dek, .story-body, .person-line, .home-signoff) { color: var(--paper); }
 html[data-page="share"] :is(h1, h2, h3, .eyebrow) { color: var(--paper); }
 
-/* Header: no background; every link sits on its own backing so it reads on any ground. */
-html[data-page] .site-header { background: transparent; border-bottom-color: transparent !important; }
-html[data-page] .site-nav a:not(.nav-shop) { background: color-mix(in srgb, var(--charcoal) 90%, transparent); border-color: color-mix(in srgb, var(--paper) 60%, transparent); color: var(--paper); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
-html[data-page] .site-nav .nav-shop { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
+/* Header A (Ian, Nov 17, 2026; AUDIT.md, Header; refs/header-versions): a solid bar in the page's own ground, so
+   nothing scrolls through under the logo and tabs (on home it takes the ground of the section underneath). The tabs
+   are outlined, with no backing; the shop is the one filled tab. */
+html[data-page] .site-header { background: var(--charcoal); border-bottom-color: transparent !important; }
+body.on-paper .site-header { background: #f1eee8; }
+body.on-red .site-header { background: #991e21; }
+html[data-page] .site-nav a:not(.nav-shop) { background: transparent; border-color: color-mix(in srgb, var(--paper) 55%, transparent); color: var(--paper); }
 /* Tab size on computers and tablets. Phones keep the site's own compact tabs (see the max-width: 520px rule above). */
-@media (min-width: 521px) { html[data-page] .site-nav a { min-height: 34px; padding: 0 12px; } }
-@media (max-width: 520px) { html[data-page] .site-nav a { min-height: 30px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3); } }
+@media (min-width: 521px) { html[data-page] .site-nav a { min-height: 32px; padding: 0 11px; } }   /* a touch smaller than 34px and 12px (Jameson, Nov 20, 2026) */
+@media (max-width: 520px) { html[data-page] .site-nav a { min-height: 30px; } }
 html[data-page="artists"] .site-nav .nav-shop, html[data-page="artist"] .site-nav .nav-shop, body.on-red .site-nav .nav-shop { background: #fff !important; border-color: #fff !important; color: #991e21 !important; }
-body.on-paper .site-nav a:not(.nav-shop) { background: rgba(241, 238, 232, 0.92); border-color: rgba(18, 17, 18, 0.55); color: #121112; }
+body.on-paper .site-nav a:not(.nav-shop) { background: transparent; border-color: rgba(18, 17, 18, 0.55); color: #121112; }
 html[data-page="share"] .brand-mark, .brand-mark { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
 
 /* Inner pages: roomy sections, each starting with a red rule; each page its own shape. */
-html[data-page]:not([data-page="home"]) main > section > :is(.section-head, .home-head, header):first-child { border-top: 3px solid var(--red); padding-top: var(--s-4); }
+html[data-page]:where(:not([data-page="home"])) main > section > :is(.section-head, .home-head, header):first-child { border-top: 3px solid var(--red); padding-top: var(--s-4); }
 html[data-page="artists"] main > section > :is(.section-head, .home-head, header):first-child, html[data-page="artist"] main > section > :is(.section-head, .home-head, header):first-child { border-top-color: #fff; }
 html[data-page="issue-01"] .reader-head { min-height: 0; padding-bottom: 0; }
 html[data-page="issue-01"] .stories { background: #181617; box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.5); }
@@ -863,19 +1021,14 @@ html[data-page="artists"] main > section { text-align: center; }
 html[data-page="artists"] .button, html[data-page="artist"] .button { background: #1a1819; color: #fff; border: 2px solid #fff; }
 html[data-page="share"] .button { min-height: 60px; padding: 0 30px; font-size: var(--t-body); }
 /* Ian's contact form on the paper ground: light boxes with dark text (its boxes are ink with paper text by default). */
-html[data-page="share"] .contact-form :is(input[type="text"], input[type="email"], textarea, select) { background: #fff; color: #121112; border-color: rgba(18, 17, 18, 0.35); }
-html[data-page="share"] .contact-form option { color: #121112; background: #fff; }
-html[data-page="support"] main > section, html[data-page="marketplace"] main > section { border-top: 0; }
-html[data-page="support"] main > section > :is(.section-head, .home-head, header):first-child, html[data-page="marketplace"] main > section > :is(.section-head, .home-head, header):first-child { border-top: 0; padding-top: 0; }
-html[data-page] .site-footer { --charcoal: #0e0d0e; --paper: #f1eee8; --muted: #9a9592; --line: rgba(241, 238, 232, 0.14); background: #0e0d0e; color: #f1eee8; padding-block: clamp(48px, 7vw, 96px); }
-html[data-page] .site-footer :is(a, p) { color: inherit; }
+html[data-page="share"] .contact-form :is(input[type="text"], input[type="email"], textarea, .suggest) { background: #fff; color: #121112; border-color: rgba(18, 17, 18, 0.35); }
+html[data-page="share"] .contact-form .suggest-item + .suggest-item { border-top-color: rgba(18, 17, 18, 0.14); }
+html[data-page="shop"] main > section, html[data-page="marketplace"] main > section { border-top: 0; }
+html[data-page="shop"] main > section > :is(.section-head, .home-head, header):first-child, html[data-page="marketplace"] main > section > :is(.section-head, .home-head, header):first-child { border-top: 0; padding-top: 0; }
+html[data-page] .site-footer { --charcoal: #0e0d0e; --paper: #f1eee8; --muted: #9a9592; --line: rgba(241, 238, 232, 0.14); --red-text: #ee5258; --red: #d42a30; --focus: #d42a30; background: #0e0d0e; color: #f1eee8; padding-block: clamp(48px, 7vw, 96px); }
+html[data-page] .site-footer p { color: inherit; }
 
 /* ---------- Home: the pinned hero and the sections that follow ---------- */
-.hf-rail { position: fixed; right: clamp(10px, 1.6vw, 20px); top: 50%; transform: translateY(-50%); z-index: 22; display: grid; gap: 14px; pointer-events: none; filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.45)); }
-.hf-rail i { display: block; width: 12px; height: 2px; background: #fff; opacity: 0.35; justify-self: end; transition: width 0.3s ease, opacity 0.3s ease; }
-.hf-rail i[aria-current="true"] { width: 26px; opacity: 0.95; }
-body.on-paper .hf-rail { filter: none; }
-body.on-paper .hf-rail i { background: #121112; }
 .hf-hero { position: sticky; top: 0; padding-inline: 0; height: 100svh; display: grid; grid-template-rows: auto minmax(0, 1fr); padding-top: calc(66px + env(safe-area-inset-top, 0px)); background: var(--charcoal); overflow: clip; }
 .hf-top { display: grid; justify-items: center; gap: var(--s-3); padding: 14px var(--gutter) 20px calc(var(--gutter) + var(--spine-w)); will-change: transform, opacity; }
 .hf-top img { width: min(150px, 34vw); height: auto; }
@@ -884,15 +1037,14 @@ body.on-paper .hf-rail i { background: #121112; }
 .hf-photo { position: relative; overflow: clip; min-height: 0; }
 .hf-photo img { position: absolute; left: 0; top: -6%; width: 100%; height: 112%; object-fit: cover; object-position: 50% 35%; will-change: transform; transform: translate3d(0, calc(var(--sy, 0) * 1%), 0) scale(1.05); }
 .hf-sec { position: relative; z-index: 5; padding: var(--s-8) var(--gutter) var(--s-8) calc(var(--gutter) + var(--spine-w)); }
-.hf-about { background: var(--charcoal); color: var(--paper); min-height: 72svh; display: grid; align-content: center; gap: var(--s-5); border-top: 3px solid var(--red); }
+.hf-about { background: var(--charcoal); color: var(--paper); min-height: 72svh; display: grid; align-content: center; gap: var(--s-5); }
 .hf-issue, .hf-find { background: var(--paper); color: #121112; box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.45); }
 .hf-artists { background: var(--charcoal); color: var(--paper); }
 .hf-share { background: var(--spine); color: #fff; }
 .hf-eyebrow { margin: 0; font: 400 var(--t-label)/1.3 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; color: var(--red-text); }
 .hf-quote { font: 400 var(--t-statement)/1.1 var(--type); letter-spacing: var(--track-tight); margin: 0; max-width: var(--measure-statement); }
 .hf-body { font: 400 var(--t-lead)/1.4 var(--type); color: #d8d3cc; max-width: var(--measure-lead); margin: 0; }
-.hf-break { display: grid; gap: var(--s-3); padding-top: var(--s-4); margin: 0 0 var(--s-6); border-top: 3px solid var(--red); }
-.hf-share .hf-break { border-top-color: #fff; }
+.hf-break { display: grid; gap: var(--s-3); margin: 0 0 var(--s-6); }
 .hf-break h2 { margin: 0; }
 .hf-facts { margin: 0; font: 400 var(--t-label)/1.3 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; opacity: 0.7; }
 .hf-more { margin: var(--s-5) 0 0; font: 400 var(--t-small)/1.4 var(--type); }
@@ -900,13 +1052,12 @@ body.on-paper .hf-rail i { background: #121112; }
 .hf-row { display: grid; grid-auto-flow: column; grid-auto-columns: min(62vw, 300px); gap: var(--s-4); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 14px var(--gutter) 18px calc(var(--gutter) + var(--spine-w)); margin: 0 calc(var(--gutter) * -1) 0 calc((var(--gutter) + var(--spine-w)) * -1); scroll-padding-inline: calc(var(--gutter) + var(--spine-w)); scrollbar-width: none; }
 .hf-row::-webkit-scrollbar { display: none; }
 .hf-card { scroll-snap-align: start; display: grid; gap: var(--s-2); align-content: start; color: inherit; text-decoration: none; }
-.hf-card img { width: 100%; height: auto; aspect-ratio: 943 / 1400; }
+.hf-card img { width: 100%; height: auto; aspect-ratio: 911 / 1368; }
 .hf-card b { font: 800 var(--t-h3)/1 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; }
 .hf-card small { color: #5b5557; font: 400 var(--t-small)/1.4 var(--type); }
 .hf-names { font: 800 var(--t-statement)/0.95 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; display: flex; flex-wrap: wrap; gap: var(--s-1) 0.4em; margin: 0; padding: 0; list-style: none; }
 .hf-names li { padding-block: var(--s-1); }
 .hf-names a { text-decoration: none; }
-.hf-names li:nth-child(even) { -webkit-text-stroke: 1.5px var(--paper); color: transparent; }
 /* The one big line in a section: typewriter, sentence case, always under the heading. */
 .hf-big { font: 400 var(--t-statement)/1.1 var(--type); letter-spacing: var(--track-tight); margin: 0 0 var(--s-6); max-width: var(--measure-statement); }
 /* Find us: one group. The Instagram handle and the email, tight together, then the sign-off. */
@@ -916,11 +1067,13 @@ body.on-paper .hf-rail i { background: #121112; }
 .hf-signoff { margin: var(--s-6) 0 0; font: 400 var(--t-body)/1.6 var(--type); color: #5b5557; }
 .hf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4) var(--s-5); }
 .hf-share .button { background: #1a1819; color: #fff; border: 2px solid #fff; min-height: 60px; padding: 0 30px; font-size: var(--t-body); }
+:root .hf-share .button.button { background-image: none; animation: none; }
+.hf-share { --focus: #fff; }
 .hf-share .button::after { content: " \2192"; white-space: pre; }
 body.is-home main { padding-top: 0; }
 /* The home does not react to the mouse. Scroll effects only. */
-html body.is-home .site-nav a:not(.nav-shop):hover { border-color: color-mix(in srgb, var(--paper) 60%, transparent); color: var(--paper); background: color-mix(in srgb, var(--charcoal) 90%, transparent); animation: none; }
-html body.is-home.on-paper .site-nav a:not(.nav-shop):hover { background: rgba(241, 238, 232, 0.92); border-color: rgba(18, 17, 18, 0.55); color: #121112; }
+html body.is-home .site-nav a:not(.nav-shop):hover { border-color: color-mix(in srgb, var(--paper) 55%, transparent); color: var(--paper); background: transparent; animation: none; }
+html body.is-home.on-paper .site-nav a:not(.nav-shop):hover { background: transparent; border-color: rgba(18, 17, 18, 0.55); color: #121112; }
 html body.is-home .site-nav .nav-shop:hover, html body.is-home .button:hover { animation: none; background-color: var(--red); color: #fff; }
 html body.is-home.on-red .site-nav .nav-shop:hover { background: #fff; color: #991e21; }
 html body.is-home .hf-share .button:hover { background: #1a1819; color: #fff; }
@@ -932,18 +1085,12 @@ html body.is-home .hf-share .button:hover { background: #1a1819; color: #fff; }
   .hf-row { margin-right: -44px; }
 }
 
-/* ---------- The tab for the page you're on ----------
-   The page you're on is filled in the page's own text colour, with the page colour as its text, so it's the one
-   solid tab in the bar on every page and ground. The other tabs stay outlined. On the red pages, Support turns
-   charcoal so it can't be mistaken for the current tab. */
-html[data-page] .site-nav a[aria-current="page"],
-html[data-page] .site-nav a[aria-current="page"]:hover,
-html[data-page] .site-nav .nav-shop[aria-current="page"] {
-  background: var(--paper) !important; border-color: var(--paper) !important; color: var(--charcoal) !important;
-  font-weight: 700; animation: none;
-}
-html[data-page="artists"] .site-nav .nav-shop:not([aria-current]), html[data-page="artist"] .site-nav .nav-shop:not([aria-current]),
-body.on-red .site-nav .nav-shop:not([aria-current]) { background: #1a1819 !important; border-color: #fff !important; color: #fff !important; }
+/* ---------- The tab for the page you're on (header A, Ian, Nov 17, 2026) ----------
+   Bold, with a bar under the word in the page's text colour, and not filled, so the shop is the one filled tab in the
+   bar on every page: red, or white with red words on the red pages (the rule with the palette remaps, above). Before
+   this, the page you're on was filled in and the shop turned charcoal on the red pages (Ian, Nov 15). */
+html[data-page] .site-nav a[aria-current="page"]:not(.nav-shop) { font-weight: 700; box-shadow: inset 0 -3px 0 currentColor; }
+html[data-page] .site-nav .nav-shop[aria-current="page"] { font-weight: 700; animation: none; }
 
 /* ---------- Issue 01: the heading flows straight into the reader ---------- */
 .reader-intro { margin: var(--s-4) 0 0; max-width: 44ch; font: 400 var(--t-lead)/1.4 var(--type); color: var(--paper); }
@@ -951,28 +1098,67 @@ html[data-page="issue-01"] main > section.reader-head { min-height: 0; padding-t
 html[data-page="issue-01"] main > section.reader { min-height: 0; padding-top: 0; padding-bottom: clamp(64px, 10vw, 120px); }
 
 /* ---------- Phones: a burger that drops down the tabs (computers keep the row of tabs) ---------- */
+/* The nav tucks away while you scroll down (main.js, tuck): the header logo flies across to the right-hand corner,
+   the buttons drop out as it passes, and it lands as the small wings; scrolling up plays it backwards. main.js moves
+   these with the Web Animations API (transform and opacity only); this only places them. On a phone the menu
+   button's lines give way to the wings. The logo sits above the nav so it flies over the buttons, not under them. */
+@media (min-width: 521px) { .site-nav { position: relative; } }
+.site-header .brand { position: relative; z-index: 5; }
+.nav-tab {
+  position: absolute; top: -5px; bottom: -5px; right: calc(var(--shop-w, 120px) + 4px); z-index: 3; width: 86px;   /* beside the shop tab, which stays */
+  display: grid; place-items: center; padding: 0; border: 0; background: none;
+  cursor: pointer; opacity: 0; pointer-events: none; -webkit-tap-highlight-color: transparent;
+}
+.site-header.is-tucked .nav-tab { pointer-events: auto; }
+.site-header.is-tucked :is(.site-nav a:not(.nav-shop), .brand) { pointer-events: none; }
+/* The small wings the nav tucks into (Ian, Nov 15, 2026): black and white until you point at it, then the red
+   version, the same as the header logo. On a phone they sit over the menu button's lines, right-aligned. */
+.nav-tab img, .burger-wings {
+  display: block; width: 72px; height: 25px;   /* the logo is 1200 × 413 */
+  filter: grayscale(1) brightness(1.3) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6));
+  transition: filter 0.25s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) {
+  .nav-tab:hover img { filter: grayscale(0) brightness(1) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
+}
+.nav-tab:active img, .nav-burger:active .burger-wings { filter: grayscale(0) brightness(1) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
+/* Clicking the wings: they keep the color they had under the pointer while they fade into the logo, which is the same
+   picture in the same place. No lift on hover, so the two line up exactly (Jameson, Nov 20, 2026). Tucking in, the
+   wings land red too (.wings-hold), then .wings-fade lets the color drain to black and white slowly. */
+.site-header.wings-hold .nav-tab img { filter: grayscale(0) brightness(1) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); transition: none; }
+.site-header.wings-fade .nav-tab img { transition: filter 0.9s ease; }
+.nav-burger { position: relative; }
+.burger-wings { position: absolute; top: 50%; right: 0; width: 62px; max-width: none; height: 21px; margin-top: -10.5px; opacity: 0; pointer-events: none; }
+/* While the wings show, the button also takes taps on the part of the wings that sticks out past it. */
+.site-header.is-tucked .nav-burger::before { content: ""; position: absolute; inset: 0 0 0 -20px; }
+@media (max-width: 520px) { .nav-tab { display: none; } }
 .nav-burger { display: none; }
 @media (max-width: 520px) {
   .nav-burger {
-    display: inline-grid; align-content: center; gap: 5px; width: 44px; height: 44px; padding: 0 11px; margin-left: auto; cursor: pointer;
+    display: inline-grid; align-content: center; width: 44px; height: 44px; padding: 0 11px; margin-left: auto; cursor: pointer;
     border: 1px solid color-mix(in srgb, var(--paper) 60%, transparent); background: color-mix(in srgb, var(--charcoal) 90%, transparent);
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3); -webkit-tap-highlight-color: transparent;
   }
-  .nav-burger span { display: block; height: 2px; background: var(--paper); transition: transform 0.25s ease, opacity 0.2s ease; }
-  .site-header.nav-open .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .site-header.nav-open .nav-burger span:nth-child(2) { opacity: 0; }
-  .site-header.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .burger-lines { display: grid; gap: 5px; }
+  .burger-lines span { display: block; height: 2px; background: var(--paper); transition: transform 0.25s ease, opacity 0.2s ease; }
+  .site-header.nav-open .burger-lines span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .site-header.nav-open .burger-lines span:nth-child(2) { opacity: 0; }
+  .site-header.nav-open .burger-lines span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   .site-header .site-nav {
-    display: none; position: absolute; top: calc(100% - 6px); right: 12px; width: min(280px, calc(100vw - 24px)); z-index: 25;
-    flex-direction: column; align-items: stretch; gap: 8px; padding: 12px;
-    background: var(--charcoal); border: 1px solid color-mix(in srgb, var(--paper) 30%, transparent); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+    display: none; position: fixed; top: calc(64px + env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 25;
+    flex-direction: column; align-items: stretch; gap: 0; padding: 4px calc(12px + var(--spine-w)) 20px;
+    background: var(--charcoal); border-bottom: 1px solid var(--line); box-shadow: 0 24px 40px rgba(0, 0, 0, 0.35);
   }
+  body.on-paper .site-header .site-nav { background: #f1eee8; }
+  body.on-red .site-header .site-nav { background: #991e21; }
   .site-header.nav-open .site-nav { display: flex; }
   /* Full names in the dropdown, big tap targets, and the page you're on filled in. */
-  html[data-page] .site-header .site-nav a { min-height: 48px; padding: 0 14px; font-size: var(--t-small); justify-content: flex-start; box-shadow: none; }
+  html[data-page] .site-header .site-nav a { min-height: 54px; padding: 0 4px; font-size: var(--t-small); justify-content: flex-start; box-shadow: none; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--paper); }
+  body.on-paper .site-header .site-nav a:not(.nav-shop) { color: #121112; border-bottom-color: rgba(18, 17, 18, 0.18); }
+  html[data-page] .site-header .site-nav a[aria-current="page"]:not(.nav-shop) { padding-left: 14px; box-shadow: inset 3px 0 0 currentColor; }
+  html[data-page] .site-header .site-nav a.nav-shop { margin-top: 16px; justify-content: center; border: 0; background: var(--red); color: #fff; }
   .site-header .site-nav .nav-long { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; }
   .site-header .site-nav .nav-short { display: none; }
-  html[data-page] .site-header .site-nav a:not([aria-current="page"]):not(.nav-shop) { background: transparent !important; color: var(--paper) !important; border-color: color-mix(in srgb, var(--paper) 45%, transparent) !important; }
   .site-header .site-nav a::after { inset: 0; }
 }
 
@@ -987,7 +1173,6 @@ html[data-page="issue-01"] main > section.reader { min-height: 0; padding-top: 0
   html[data-page] .site-footer { padding-block: 36px; }
   .hf-about { min-height: 0; }
   .hf-row { margin-right: calc(var(--gutter) * -1); }
-  .hf-rail { display: none; }   /* the side dashes crowd a small screen */
   /* The palette only: no orange. */
   .motion :is(.button:not(.button-off):not(.button-line), .site-nav .nav-shop:not([aria-current])) {
     background-image: linear-gradient(100deg, var(--red) 0%, var(--red) 30%, var(--spine) 50%, var(--red) 70%, var(--red) 100%);
@@ -1015,7 +1200,7 @@ html[data-page="share"] main > section.contact { padding-top: var(--s-6); paddin
 .reach .ig-button { flex: none; }
 /* The email: click the address to write to us, or the button beside it to copy it. */
 .reach-mail { display: inline-flex; align-items: center; gap: var(--s-3); min-height: 44px; font: 400 var(--t-body)/1 var(--type); color: var(--paper); }
-.reach-mail a { color: inherit; text-decoration: none; }
+.reach-mail a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .reach-mail a:hover { color: var(--red-text); }
 .reach-copy { padding: 0; background: none; color: inherit; cursor: pointer; }
 .reach-copy svg + svg, .reach-copy.is-copied svg:first-child { display: none; }
@@ -1039,7 +1224,7 @@ html[data-page="share"] .contact-side { position: static; }
 .hf-aboutus { --muted: #5b5557; --red-text: #b01f25; background: var(--paper); color: #121112; box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.45); min-height: 0; }
 .hf-message { margin: 0 0 var(--s-7); max-width: var(--measure-statement); font: 400 var(--t-statement)/1.1 var(--type); letter-spacing: var(--track-tight); }
 .hf-points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-6) var(--s-7); max-width: 1100px; }
-.hf-point { display: grid; gap: var(--s-3); align-content: start; padding-top: var(--s-3); border-top: 2px solid #121112; }
+.hf-point { display: grid; gap: var(--s-3); align-content: start; }
 .hf-point h3 { margin: 0; }
 .hf-point p { margin: 0; font: 400 var(--t-body)/1.6 var(--type); max-width: 44ch; }
 .hf-point .button { margin-top: 6px; }
@@ -1092,11 +1277,11 @@ html[data-page="share"] .contact-send { justify-self: center; }
 .watch-item { aspect-ratio: 16 / 9; background: #000; }
 .watch-item iframe { display: block; width: 100%; height: 100%; border: 0; }
 
-.person-meta a.rag-ref { text-decoration: none; }
+.person-meta a.rag-ref { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Artist pages: previous and next artist, small buttons with an arrow so it reads as clickable */
 .artist-pager { padding-inline: calc(var(--gutter) + var(--spine-w)) var(--gutter); padding-block: 0 var(--s-6); }
-.artist-pager-inner { display: flex; justify-content: space-between; gap: var(--s-3); max-width: 1400px; margin: 0 auto; padding-top: var(--s-4); border-top: 1px solid var(--line); }
+.artist-pager-inner { display: flex; justify-content: space-between; gap: var(--s-3); max-width: 1400px; margin: 0 auto; padding-top: var(--s-4); }
 .artist-pager a { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; padding: 6px 14px; border: 1px solid var(--line); text-decoration: none; color: var(--paper); transition: background 0.2s, color 0.2s; }
 .artist-pager-text { display: grid; gap: 2px; }
 .artist-next { text-align: right; margin-left: auto; }
@@ -1106,10 +1291,11 @@ html[data-page="share"] .contact-send { justify-self: center; }
 @media (max-width: 520px) { .artist-pager a { padding: 6px 10px; gap: var(--s-2); } }
 
 
-/* Header logo: black and white until you point at it, then the red version */
-.brand-mark { filter: grayscale(1) brightness(1.3) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); transition: filter 0.25s ease; }
+/* Header logo: black and white until you point at it, then the red version. On every page: an older Share-page
+   rule kept it red there, which showed when it flew into the black-and-white wings. */
+.brand-mark, html[data-page] .brand-mark { filter: grayscale(1) brightness(1.3) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); transition: filter 0.25s ease; }
 .motion .brand-mark { transition: filter 0.25s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
-.brand:hover .brand-mark, .brand:focus-visible .brand-mark, .brand:active .brand-mark { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
+:is(.brand:hover, .brand:focus-visible, .brand:active) .brand-mark, html[data-page] :is(.brand:hover, .brand:focus-visible, .brand:active) .brand-mark { filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.6)); }
 
 /* Hero title in Carol Gothic (Adobe Fonts web project zqx4jzq). It is a blackletter, so mixed case, no capitals, a little tighter. */
 .hf-title { font-family: "carol-gothic", var(--display); font-size: clamp(2.6rem, 0.8rem + 7vw, 8rem); line-height: 1; text-transform: none; letter-spacing: 0.01em; }
@@ -1117,28 +1303,21 @@ html[data-page="share"] .contact-send { justify-self: center; }
 /* Every page's top heading in Carol Gothic (mixed case, since it is a blackletter) */
 html[data-page] h1, .person-name, .story-hero h1, .story-type h1, .share-title { font-family: "carol-gothic", var(--display); text-transform: none; letter-spacing: 0.01em; line-height: 1; font-weight: 400; }
 html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 10vw, 11rem); }
+/* A story title beside its photo sizes to its own column (the container on .story-hero-text), so a long word
+   like Remembering can't run past the page edge. */
+html[data-page]:not([data-page="home"]) .story-hero-text h1 { font-size: min(clamp(3.4rem, 1.8rem + 10vw, 11rem), 20cqi); overflow-wrap: break-word; }
 .person-name { font-size: clamp(3.4rem, 1.8rem + 10vw, 10rem); }
 .person-name.is-long, .person-head.has-photo .person-name.is-long { font-size: clamp(3rem, 1.6rem + 8vw, 8rem); }
 .person-head.has-photo .person-name { font-size: clamp(3rem, 1.6rem + 9vw, 9rem); }
 
 /* Home: sections are separated by a red line, no shadow (same line that sets the tagline off) */
 .hf-sec, .hf-issue, .hf-find, .hf-aboutus { box-shadow: none; }
-.hf-aboutus, .hf-issue, .hf-artists, .hf-find { border-top: 3px solid var(--red); }
+.hf-issue { border-top: 3px solid var(--red); }   /* the one place two home sections share a ground (paper) */
 
-/* Phones: the burger is just three lines, and the opened menu has no box behind the tabs */
+/* Phones: the burger is just three lines */
 @media (max-width: 520px) {
   .site-header .nav-burger { background: transparent; border: 0; box-shadow: none; }
-  .site-header .nav-burger span { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
-  .site-header .site-nav { background: transparent; border: 0; box-shadow: none; padding: 0; }
-  .site-header .site-nav a { text-shadow: none; }
-}
-
-/* Phones: every tab in the opened menu is a red box with white text, easy to read over anything */
-@media (max-width: 520px) {
-  html[data-page] .site-header .site-nav a,
-  html[data-page] .site-header .site-nav a:not([aria-current="page"]):not(.nav-shop),
-  html[data-page] .site-header .site-nav a.nav-shop { background: #d42a30 !important; background-image: none !important; color: #fff !important; border: 2px solid #d42a30 !important; text-shadow: none !important; box-shadow: none !important; }
-  html[data-page] .site-header .site-nav a[aria-current="page"] { border-color: #fff !important; }
+  .site-header .burger-lines span { box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
 }
 
 /* Home: a hairline at the foot of the hero that draws itself downward and fades, a quiet hint to scroll */
@@ -1159,8 +1338,6 @@ html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 1
 @media (max-width: 520px) { .brand-mark { width: 70px; height: 24px; } }
 
 /* Home: one red line only, the one that separates the sections. The heading sits right under it. */
-.hf-break { border-top: 0; padding-top: 0; }
-.hf-share .hf-break { border-top: 0; }
 .hf-sec { padding-top: clamp(28px, 4vw, 48px); }
 .hf-about { align-content: start; }
 
@@ -1181,10 +1358,8 @@ html[data-page]:not([data-page="home"]) h1 { font-size: clamp(3.4rem, 1.8rem + 1
 /* Home, Share your work: three steps, with icons */
 .hf-steps { list-style: none; margin: var(--s-6) 0 var(--s-6); padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 3vw, 40px); max-width: 860px; }
 .hf-steps li { display: grid; gap: var(--s-2); align-content: start; justify-items: start; color: #fff; font: 400 1rem/1.35 var(--type); }
-.hf-steps .ico { width: clamp(36px, 5.5vw, 60px); height: auto; aspect-ratio: 1; }
 .hf-step-no { font: 400 var(--t-label)/1 var(--type); letter-spacing: var(--track-caps, 0.12em); opacity: 0.75; }
-.hf-steps li:not(:first-child) { border-left: 1px solid rgba(255, 255, 255, 0.35); padding-left: clamp(12px, 2.4vw, 28px); }
-@media (max-width: 520px) { .hf-steps { gap: 10px; } .hf-steps li { font-size: var(--t-label); } .hf-steps li:not(:first-child) { padding-left: 10px; } }
+@media (max-width: 520px) { .hf-steps { gap: 10px; } .hf-steps li { font-size: var(--t-label); } }
 
 /* ---------- Accessibility and legal ---------- */
 /* Skip link: the first thing a keyboard user reaches; it appears only while it has focus. */
@@ -1209,14 +1384,14 @@ main:focus { outline: none; }
 .legal-links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); margin-top: var(--s-6); padding-top: var(--s-3); border-top: 1px solid var(--line); font: 400 var(--t-small)/1.4 var(--type); }
 .footer-legal { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px var(--s-3); font: 400 var(--t-label)/1.4 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; }
 .footer-legal a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
-.footer-legal a:hover, .footer-legal a:focus-visible { color: var(--paper); }
+.footer-legal a:hover, .footer-legal a:focus-visible { color: var(--red-text); }
 
 /* The form's agree box: a real checkbox with a big tap area, then a link to the policy. */
 .contact-consent { display: grid; gap: var(--s-1); margin-top: var(--s-3); }
 .consent-label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font: 400 var(--t-small)/1.45 var(--type); }
 .consent-label input { flex: none; width: 24px; height: 24px; margin: 0; accent-color: var(--red); cursor: pointer; }
 .consent-label input:focus-visible { outline: 3px solid var(--red-text); outline-offset: 3px; }
-.consent-link { margin-left: 36px; font: 400 var(--t-small)/1.4 var(--type); color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.consent-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; margin-left: 36px; font: 400 var(--t-small)/1.4 var(--type); color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
 /* A video waits behind a play button, so nothing is sent to YouTube until it is pressed. */
 .watch-play {
@@ -1224,8 +1399,155 @@ main:focus { outline: none; }
   border: 1px solid var(--line); background: #0e0d0e; color: #f1eee8; text-align: center; cursor: pointer; font: inherit;
 }
 .watch-play:hover { border-color: var(--red); }
+:is(html[data-page="artists"], html[data-page="artist"]) .watch-play:hover { border-color: #fff; }
 .watch-play:focus-visible { outline: 3px solid var(--red-text); outline-offset: 3px; }
 .watch-play-icon { width: 0; height: 0; border-left: 22px solid #f1eee8; border-top: 14px solid transparent; border-bottom: 14px solid transparent; }
 .watch-play-title { font: 400 var(--t-small)/1.3 var(--type); }
 .watch-play-note { font: 400 var(--t-label)/1.3 var(--type); letter-spacing: var(--track-caps); text-transform: uppercase; color: #bdb8b4; }
 .watch-item noscript a { color: #f1eee8; padding: 16px; display: block; }
+
+/* ---------- Be a Dirtbag: the shop (AUDIT.md section 1; Ian OK'd refs/shop-next, Nov 17, 2026) ----------
+   The audit's rules: solid red only for actions; selected = filled in the text colour; no box around plain text, no
+   frame around a photo; 44px to tap; photos whole. The header is solid here, so nothing scrolls through it above the
+   tabs that stick under it on a phone. */
+html[data-page="shop"] .site-header { background: var(--charcoal); }
+html[data-page] main > section.store:first-child { padding-top: 0; }
+main > .store { max-width: 1400px; margin: 0 auto; padding-bottom: var(--s-8); }
+.store-head { padding-block: var(--s-4); }
+main .store .store-head h1 { font-size: clamp(2.5rem, 1.8rem + 3vw, 4.5rem); line-height: 1; }
+.store-line { margin-top: 8px; max-width: 60ch; font: 400 var(--t-small)/1.5 var(--type); color: var(--muted); }
+/* A stand-in: one small yellow tag (Ian, Nov 17), never on a photo. */
+.placeholder-tag { display: inline-block; padding: 3px 5px 2px; vertical-align: 1px; background: #e7c14a; color: #121112; font: 400 0.6875rem/1 var(--type); text-transform: uppercase; letter-spacing: var(--track-caps); white-space: nowrap; }
+.nowrap { white-space: nowrap; }
+
+/* The Rag, on its own. */
+.store-rag { padding-bottom: var(--s-5); }
+.store-rag-top { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 16px; align-items: center; }
+.store-cover { margin: 0; }
+.store-cover img { display: block; width: 100%; height: auto; }
+.store-rag-text { display: grid; gap: 10px; justify-items: start; }
+.store-rag-name { font-size: var(--t-h3); line-height: 0.95; }
+.store-rag-price { margin: 0; font: 400 var(--t-small)/1.4 var(--type); color: var(--paper); }
+.store-rag .shop-dock-open { padding-inline: 22px; }
+.store-stock { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
+
+/* Its buy box: a sheet on a phone or tablet (the same box as the Issue 01 bar, order.js), with fewer lines: no slider
+   end labels, no running sum (the total is on Continue), the unchosen half of Mail / Pickup see-through. */
+.shop-dock.is-sheet { position: relative; z-index: auto; overflow: visible; background: none; border: 0; padding: 0; }
+.shop-dock.is-sheet.is-open { z-index: 41; }
+html[data-page="shop"] .shop-scrim { z-index: 40; background: rgba(10, 4, 5, 0.82); }
+.is-sheet .shop-dock-panel {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; max-height: calc(100svh - 64px);
+  padding: 0 var(--gutter) calc(var(--s-4) + env(safe-area-inset-bottom, 0px)) calc(var(--gutter) + var(--spine-w));
+  background: var(--charcoal); border-top: 1px solid var(--line);
+}
+.is-sheet .shop-dock-top { top: 0; display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 12px; align-items: center; margin: 0 0 var(--s-2); padding-block: var(--s-3); }
+.store-sheet-cover { display: block; width: 44px; height: auto; }
+.store-sheet-text { display: grid; gap: 4px; }
+.store-sheet-name { margin: 0; font: 800 var(--t-body)/1 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; }
+.store-sheet-text .store-rag-price { font-size: var(--t-label); color: var(--muted); }
+.is-sheet .shop-dock-close { border: 0; background: none; font-size: 2rem; }
+@media (hover: hover) { .is-sheet .shop-dock-close:hover { color: var(--red-text); } }
+.is-sheet .pay-ends, .is-sheet .order-sum, .is-sheet .order-amount { display: none; }
+.is-sheet .order-total { align-self: center; }
+.is-sheet .buy-switch { background: none; border-color: rgba(241, 238, 232, 0.5); }
+.is-sheet .buy-switch label + label span { border-left: 0; }
+.is-sheet .qty { background: none; border-color: rgba(241, 238, 232, 0.5); }
+.is-sheet .order-form .qty-input { border-width: 0; }
+.is-sheet .buy-go { min-height: 54px; }
+
+/* Tabs: plain words, the chosen one filled in the text colour. They stick under the header on a phone. */
+.store-tabs {
+  position: sticky; top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 10;
+  display: flex; flex-wrap: wrap; gap: 4px;
+  margin: 0 calc(var(--gutter) * -1) 0 calc((var(--gutter) + var(--spine-w)) * -1);
+  padding: 8px var(--gutter) 8px calc(var(--gutter) + var(--spine-w));
+  background: var(--charcoal);
+}
+.store-tab {
+  position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 8px;
+  border: 0; background: none; color: var(--paper); cursor: pointer;
+  font: 400 var(--t-label)/1 var(--type); text-transform: uppercase; letter-spacing: var(--track-caps);
+}
+.store-tab::after { content: ""; position: absolute; inset: -2px 0; }
+.store-tab[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+@media (hover: hover) { .store-tab[aria-pressed="false"]:hover { color: var(--red-text); } }
+
+/* Each kind: a small heading, then the grid. */
+.store-kind { padding-top: var(--s-5); scroll-margin-top: calc(120px + env(safe-area-inset-top, 0px)); }
+.store-kind-head { margin-bottom: 12px; font-size: var(--t-h3); }
+.store-kind-note { margin: -4px 0 var(--s-3); font: 400 var(--t-small)/1.5 var(--type); color: var(--muted); }
+.store-kind-note a { color: var(--paper); text-underline-offset: 3px; }
+.is-filtered .store-kind-head { display: none; }
+[hidden].store-kind, .is-off[hidden] { display: none; }
+.store-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5) 12px; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 640px) { .store-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-5) 16px; } }
+
+/* A card is one link: the photo whole on its own ground, the name, the price, a small Buy. */
+.store-card { min-width: 0; }
+.store-item { display: grid; gap: 6px; justify-items: start; color: inherit; text-decoration: none; }
+.store-shot { display: grid; place-items: center; width: 100%; aspect-ratio: 1; }
+.store-shot img { width: 100%; height: 100%; object-fit: contain; }
+.store-shot.is-empty { background: var(--ink); }
+.store-shot.is-empty span { font: 400 var(--t-label)/1 var(--type); text-transform: uppercase; letter-spacing: var(--track-caps); color: var(--muted); }
+.store-item .credit { margin-top: -2px; }
+.store-name { margin-top: 4px; font: 800 var(--t-body)/1.05 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; overflow-wrap: anywhere; transition: color 0.2s; }
+.store-price { font: 400 var(--t-small)/1.4 var(--type); color: var(--paper); }
+.store-buy { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; margin-top: 2px; padding: 0 14px; background: var(--red); color: #fff; font: 400 var(--t-label)/1 var(--type); text-transform: uppercase; letter-spacing: var(--track-caps); transition: background-color 0.2s, transform 0.15s; }
+.store-buy.no-link { opacity: 0.45; }
+@media (hover: hover) {
+  a.store-item:hover .store-name { color: var(--red-text); }
+  a.store-item:hover .store-buy { background: #e5373d; }
+}
+a.store-item:active .store-buy { transform: scale(0.96); }
+.store-sold { margin-top: 2px; font: 400 var(--t-small)/1.4 var(--type); color: var(--muted); }
+.is-sold .store-shot { opacity: 0.45; }
+
+/* Tablet and small laptop: the Rag in a column that stays, the grid beside it; the sheet comes in from the side. */
+@media (min-width: 900px) {
+  .store-body { display: grid; grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); gap: clamp(32px, 4vw, 64px); align-items: start; }
+  .store-rag, .store-rag.shop-dock.is-sheet { position: sticky; top: 88px; padding: 0; }
+  .store-rag-top { grid-template-columns: 112px minmax(0, 1fr); align-items: start; }
+  .store-tabs { position: static; margin: 0; padding: 0; background: none; }
+  .store-kind:first-of-type { padding-top: var(--s-4); }
+  .is-sheet .shop-dock-panel { left: auto; top: 0; width: 460px; max-height: none; border-top: 0; border-left: 1px solid var(--line); }
+  /* Only the Rag on the page (the other kinds switched off): the cover big, the words and the box beside it. */
+  .store-body.is-rag-only { display: block; }
+  .is-rag-only .store-rag, .is-rag-only .store-rag.shop-dock.is-sheet { position: relative; top: auto; display: grid; grid-template-columns: minmax(240px, 340px) minmax(0, 560px); gap: 8px clamp(32px, 4vw, 56px); align-items: start; }
+  .is-rag-only .store-rag-top { display: contents; }
+  .is-rag-only .store-cover { grid-column: 1; grid-row: 1 / span 3; }
+  .is-rag-only .store-rag-text, .is-rag-only .store-stock, .is-rag-only .is-off { grid-column: 2; }
+}
+/* Laptop: the Rag's whole buy box sits ready in its column; no sheet. */
+@media (min-width: 1200px) {
+  .store-body { grid-template-columns: minmax(380px, 430px) minmax(0, 1fr); }
+  .store-rag-top { grid-template-columns: 132px minmax(0, 1fr); gap: 20px; align-items: center; }
+  .store-rag .shop-dock-open { display: none; }
+  .is-sheet .shop-dock-panel { position: static; display: block; width: auto; max-height: none; overflow: visible; margin-top: var(--s-4); padding: 0; background: none; border: 0; z-index: auto; animation: none; }
+  .is-rag-only .shop-dock-panel { grid-column: 2; margin-top: var(--s-2); }
+}
+@media (min-width: 1400px) { .store-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* DRAFT marks (Ian, Nov 17, 2026): only in the hidden-parts preview, as the small yellow Placeholder tag with what's
+   missing beside it. The live site leaves them out (build.mjs, draft). */
+.draft-mark { font: 400 var(--t-small)/1.4 var(--type); color: var(--muted); text-transform: none; letter-spacing: 0; }
+/* The policy pages' one quiet line while they're drafts. */
+.legal-note { margin: 0 0 var(--s-5); font: 400 var(--t-small)/1.5 var(--type); color: var(--muted); }
+
+/* ---------- The rules, applied (AUDIT.md section 3; Ian, Nov 17, 2026) ---------- */
+/* Small text links: underlined, the text's colour; red on hover, and a thicker line where red can't show (the red
+   pages); a tap area of at least 44px without changing the line they sit in. */
+:is(.story .eyebrow a, .person-head .eyebrow a, .person-meta a.rag-ref, .story .meta a, .hf-more a, .reach-mail a) { position: relative; }
+:is(.story .eyebrow a, .person-head .eyebrow a, .person-meta a.rag-ref, .story .meta a, .hf-more a, .reach-mail a)::after { content: ""; position: absolute; inset: -14px -4px; }
+@media (hover: hover) {
+  :is(.story .eyebrow a, .person-head .eyebrow a, .person-meta a.rag-ref, .story .meta a, .more, .reach-mail a, .consent-link, .legal a, .footer-nav a, .footer-legal a, .footer-line a):hover { color: var(--red-text); text-decoration-thickness: 2px; }
+}
+/* The footer's links: underlined, each 44px tall. */
+.footer-nav a { text-decoration: underline; text-underline-offset: 4px; }
+.footer-legal a, .footer-line a { display: inline-flex; align-items: center; min-height: 44px; }
+/* Topic tags: plain words with a dot between them. */
+.tag + .tag::before { content: "·"; margin-right: var(--s-2); }
+/* Share's copy button: 44px to tap. */
+.reach-copy.ig-button { width: 44px; height: 44px; }
+/* Buttons that can't be pressed right now (the reader's first and last page, the copies at 1 and at most) look it. */
+.reader-btn[aria-disabled="true"], .qty-btn[aria-disabled="true"] { opacity: 0.35; cursor: default; }
