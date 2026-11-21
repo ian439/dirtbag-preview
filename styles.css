@@ -1052,7 +1052,7 @@ html[data-page] .site-footer p { color: inherit; }
 .hf-row { display: grid; grid-auto-flow: column; grid-auto-columns: min(62vw, 300px); gap: var(--s-4); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: 14px var(--gutter) 18px calc(var(--gutter) + var(--spine-w)); margin: 0 calc(var(--gutter) * -1) 0 calc((var(--gutter) + var(--spine-w)) * -1); scroll-padding-inline: calc(var(--gutter) + var(--spine-w)); scrollbar-width: none; }
 .hf-row::-webkit-scrollbar { display: none; }
 .hf-card { scroll-snap-align: start; display: grid; gap: var(--s-2); align-content: start; color: inherit; text-decoration: none; }
-.hf-card img { width: 100%; height: auto; aspect-ratio: 911 / 1368; }
+.hf-card img { width: 100%; height: auto; }   /* the width and height attributes set the shape: some pages are 911 wide, some 921 */
 .hf-card b { font: 800 var(--t-h3)/1 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; }
 .hf-card small { color: #5b5557; font: 400 var(--t-small)/1.4 var(--type); }
 .hf-names { font: 800 var(--t-statement)/0.95 var(--display); font-variation-settings: var(--wdth); text-transform: uppercase; display: flex; flex-wrap: wrap; gap: var(--s-1) 0.4em; margin: 0; padding: 0; list-style: none; }
